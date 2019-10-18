@@ -17,16 +17,16 @@ namespace DivideSharp
         /// <summary>
         /// The strategy that only shifts.
         /// </summary>
-        Shift = 0x01,
+        Shift = 0b01,
 
         /// <summary>
         /// The strategy multiplies and shifts.
         /// </summary>
-        MultiplyShift = 0x10,
+        MultiplyShift = 0b10,
 
         /// <summary>
         /// The strategy multiplies, adds, and shifts.
         /// </summary>
-        MultiplyAddShift = 0x11
+        MultiplyAddShift = 0b11
     }
 }

@@ -1,23 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <Authors>ちーず(･8･)けーき</Authors>
+        <Version>0.0.1</Version>
+        <Description>Like RyuJIT does before running, the DivideSharp optimizes an integer division by "mostly constant" values.</Description>
+        <Copyright>Copyright 2019 ちーず(･8･)けーき</Copyright>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/MineCake147E/DivideSharp</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/MineCake147E/DivideSharp.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Visual Studio 2019\Repos\DivideSharp\DivideSharp\DivideSharp.xml</DocumentationFile>
-    <WarningsAsErrors>NU1605; CS1591</WarningsAsErrors>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DocumentationFile>C:\Visual Studio 2019\Repos\DivideSharp\DivideSharp\DivideSharp.xml</DocumentationFile>
+        <WarningsAsErrors>NU1605; CS1591</WarningsAsErrors>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Visual Studio 2019\Repos\DivideSharp\DivideSharp\DivideSharp.xml</DocumentationFile>
-    <WarningsAsErrors>NU1605; CS1591</WarningsAsErrors>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DocumentationFile>C:\Visual Studio 2019\Repos\DivideSharp\DivideSharp\DivideSharp.xml</DocumentationFile>
+        <WarningsAsErrors>NU1605; CS1591</WarningsAsErrors>
+        <WarningLevel>3</WarningLevel>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Memory" Version="4.5.3" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
-    <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="System.Memory" Version="4.5.3" />
+        <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
+        <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
+    </ItemGroup>
 </Project>
