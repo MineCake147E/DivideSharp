@@ -105,7 +105,7 @@
         </member>
         <member name="T:DivideSharp.UInt32Divisor">
             <summary>
-            Divides an <see cref="T:System.UInt32"/>
+            Divides an <see cref="T:System.UInt32"/> value RAPIDLY.
             </summary>
             <seealso cref="T:DivideSharp.IDivisor`1" />
         </member>

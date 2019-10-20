@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace DivideSharp
 {
     /// <summary>
-    /// Divides an <see cref="uint"/>
+    /// Divides an <see cref="uint"/> value RAPIDLY.
     /// </summary>
     /// <seealso cref="IDivisor{T}" />
     public readonly struct UInt32Divisor : IDivisor<uint>, IEquatable<UInt32Divisor>

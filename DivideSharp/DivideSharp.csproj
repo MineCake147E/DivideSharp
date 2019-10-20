@@ -11,6 +11,7 @@
         <PackageProjectUrl>https://github.com/MineCake147E/DivideSharp</PackageProjectUrl>
         <RepositoryUrl>https://github.com/MineCake147E/DivideSharp.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
