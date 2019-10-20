@@ -27,6 +27,11 @@ namespace DivideSharp
         /// <summary>
         /// The strategy multiplies, adds, and shifts.
         /// </summary>
-        MultiplyAddShift = 0b11
+        MultiplyAddShift = 0b11,
+
+        /// <summary>
+        /// The strategy for >MaxValue/2 that only branches.
+        /// </summary>
+        Branch = 0b100
     }
 }

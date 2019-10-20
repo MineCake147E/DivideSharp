@@ -29,6 +29,11 @@
             The strategy multiplies, adds, and shifts.
             </summary>
         </member>
+        <member name="F:DivideSharp.DivisorStrategy.Branch">
+            <summary>
+            The strategy for >MaxValue/2 that only branches.
+            </summary>
+        </member>
         <member name="T:DivideSharp.IDivisor`1">
             <summary>
             Defines a base infrastructure of an Divisor.

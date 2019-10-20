@@ -7,6 +7,7 @@ namespace DivideSharp.Tests
     {
         #region Test Cases
 
+        //Pre-Defined
         [TestCase(9u, 1u)]
         [TestCase(9u, 8u)]
         [TestCase(9u, 9u)]
@@ -14,6 +15,7 @@ namespace DivideSharp.Tests
         [TestCase(9u, 17u)]
         [TestCase(9u, 18u)]
         [TestCase(9u, 19u)]
+        //Shift
         [TestCase(16u, 1u)]
         [TestCase(16u, 15u)]
         [TestCase(16u, 16u)]
@@ -21,6 +23,7 @@ namespace DivideSharp.Tests
         [TestCase(16u, 31u)]
         [TestCase(16u, 32u)]
         [TestCase(16u, 33u)]
+        //MultiplyAdd
         [TestCase(19u, 1u)]
         [TestCase(19u, 18u)]
         [TestCase(19u, 19u)]
@@ -28,6 +31,7 @@ namespace DivideSharp.Tests
         [TestCase(19u, 37u)]
         [TestCase(19u, 38u)]
         [TestCase(19u, 39u)]
+        //Multiply
         [TestCase(23u, 1u)]
         [TestCase(23u, 22u)]
         [TestCase(23u, 23u)]
@@ -35,6 +39,13 @@ namespace DivideSharp.Tests
         [TestCase(23u, 45u)]
         [TestCase(23u, 46u)]
         [TestCase(23u, 47u)]
+        //Branch
+        [TestCase(0x8000_0001u, 1u)]
+        [TestCase(0x8000_0001u, 0x8000_0000u)]
+        [TestCase(0x8000_0001u, 0x8000_0001u)]
+        [TestCase(0x8000_0001u, 0x8000_0002u)]
+        [TestCase(0x8000_0001u, 0xFFFF_FFFEu)]
+        [TestCase(0x8000_0001u, 0xFFFF_FFFFu)]
 
         #endregion Test Cases
 
@@ -47,6 +58,7 @@ namespace DivideSharp.Tests
 
         #region Test Cases
 
+        //Pre-Defined
         [TestCase(9u, 1u)]
         [TestCase(9u, 8u)]
         [TestCase(9u, 9u)]
@@ -54,6 +66,7 @@ namespace DivideSharp.Tests
         [TestCase(9u, 17u)]
         [TestCase(9u, 18u)]
         [TestCase(9u, 19u)]
+        //Shift
         [TestCase(16u, 1u)]
         [TestCase(16u, 15u)]
         [TestCase(16u, 16u)]
@@ -61,6 +74,7 @@ namespace DivideSharp.Tests
         [TestCase(16u, 31u)]
         [TestCase(16u, 32u)]
         [TestCase(16u, 33u)]
+        //MultiplyAdd
         [TestCase(19u, 1u)]
         [TestCase(19u, 18u)]
         [TestCase(19u, 19u)]
@@ -68,6 +82,7 @@ namespace DivideSharp.Tests
         [TestCase(19u, 37u)]
         [TestCase(19u, 38u)]
         [TestCase(19u, 39u)]
+        //Multiply
         [TestCase(23u, 1u)]
         [TestCase(23u, 22u)]
         [TestCase(23u, 23u)]
@@ -75,6 +90,13 @@ namespace DivideSharp.Tests
         [TestCase(23u, 45u)]
         [TestCase(23u, 46u)]
         [TestCase(23u, 47u)]
+        //Branch
+        [TestCase(0x8000_0001u, 1u)]
+        [TestCase(0x8000_0001u, 0x8000_0000u)]
+        [TestCase(0x8000_0001u, 0x8000_0001u)]
+        [TestCase(0x8000_0001u, 0x8000_0002u)]
+        [TestCase(0x8000_0001u, 0xFFFF_FFFEu)]
+        [TestCase(0x8000_0001u, 0xFFFF_FFFFu)]
 
         #endregion Test Cases
 
@@ -87,6 +109,7 @@ namespace DivideSharp.Tests
 
         #region Test Cases
 
+        //Pre-Defined
         [TestCase(9u, 1u)]
         [TestCase(9u, 8u)]
         [TestCase(9u, 9u)]
@@ -94,6 +117,7 @@ namespace DivideSharp.Tests
         [TestCase(9u, 17u)]
         [TestCase(9u, 18u)]
         [TestCase(9u, 19u)]
+        //Shift
         [TestCase(16u, 1u)]
         [TestCase(16u, 15u)]
         [TestCase(16u, 16u)]
@@ -101,6 +125,7 @@ namespace DivideSharp.Tests
         [TestCase(16u, 31u)]
         [TestCase(16u, 32u)]
         [TestCase(16u, 33u)]
+        //MultiplyAdd
         [TestCase(19u, 1u)]
         [TestCase(19u, 18u)]
         [TestCase(19u, 19u)]
@@ -108,6 +133,7 @@ namespace DivideSharp.Tests
         [TestCase(19u, 37u)]
         [TestCase(19u, 38u)]
         [TestCase(19u, 39u)]
+        //Multiply
         [TestCase(23u, 1u)]
         [TestCase(23u, 22u)]
         [TestCase(23u, 23u)]
@@ -115,6 +141,13 @@ namespace DivideSharp.Tests
         [TestCase(23u, 45u)]
         [TestCase(23u, 46u)]
         [TestCase(23u, 47u)]
+        //Branch
+        [TestCase(0x8000_0001u, 1u)]
+        [TestCase(0x8000_0001u, 0x8000_0000u)]
+        [TestCase(0x8000_0001u, 0x8000_0001u)]
+        [TestCase(0x8000_0001u, 0x8000_0002u)]
+        [TestCase(0x8000_0001u, 0xFFFF_FFFEu)]
+        [TestCase(0x8000_0001u, 0xFFFF_FFFFu)]
 
         #endregion Test Cases
 
@@ -131,6 +164,7 @@ namespace DivideSharp.Tests
 
         #region Test Cases
 
+        //Pre-Defined
         [TestCase(9u, 1u)]
         [TestCase(9u, 8u)]
         [TestCase(9u, 9u)]
@@ -138,6 +172,7 @@ namespace DivideSharp.Tests
         [TestCase(9u, 17u)]
         [TestCase(9u, 18u)]
         [TestCase(9u, 19u)]
+        //Shift
         [TestCase(16u, 1u)]
         [TestCase(16u, 15u)]
         [TestCase(16u, 16u)]
@@ -145,6 +180,7 @@ namespace DivideSharp.Tests
         [TestCase(16u, 31u)]
         [TestCase(16u, 32u)]
         [TestCase(16u, 33u)]
+        //MultiplyAdd
         [TestCase(19u, 1u)]
         [TestCase(19u, 18u)]
         [TestCase(19u, 19u)]
@@ -152,6 +188,7 @@ namespace DivideSharp.Tests
         [TestCase(19u, 37u)]
         [TestCase(19u, 38u)]
         [TestCase(19u, 39u)]
+        //Multiply
         [TestCase(23u, 1u)]
         [TestCase(23u, 22u)]
         [TestCase(23u, 23u)]
@@ -159,6 +196,13 @@ namespace DivideSharp.Tests
         [TestCase(23u, 45u)]
         [TestCase(23u, 46u)]
         [TestCase(23u, 47u)]
+        //Branch
+        [TestCase(0x8000_0001u, 1u)]
+        [TestCase(0x8000_0001u, 0x8000_0000u)]
+        [TestCase(0x8000_0001u, 0x8000_0001u)]
+        [TestCase(0x8000_0001u, 0x8000_0002u)]
+        [TestCase(0x8000_0001u, 0xFFFF_FFFEu)]
+        [TestCase(0x8000_0001u, 0xFFFF_FFFFu)]
 
         #endregion Test Cases
 
@@ -171,6 +215,7 @@ namespace DivideSharp.Tests
 
         #region Test Cases
 
+        //Pre-Defined
         [TestCase(9u, 1u)]
         [TestCase(9u, 8u)]
         [TestCase(9u, 9u)]
@@ -178,6 +223,7 @@ namespace DivideSharp.Tests
         [TestCase(9u, 17u)]
         [TestCase(9u, 18u)]
         [TestCase(9u, 19u)]
+        //Shift
         [TestCase(16u, 1u)]
         [TestCase(16u, 15u)]
         [TestCase(16u, 16u)]
@@ -185,6 +231,7 @@ namespace DivideSharp.Tests
         [TestCase(16u, 31u)]
         [TestCase(16u, 32u)]
         [TestCase(16u, 33u)]
+        //MultiplyAdd
         [TestCase(19u, 1u)]
         [TestCase(19u, 18u)]
         [TestCase(19u, 19u)]
@@ -192,6 +239,7 @@ namespace DivideSharp.Tests
         [TestCase(19u, 37u)]
         [TestCase(19u, 38u)]
         [TestCase(19u, 39u)]
+        //Multiply
         [TestCase(23u, 1u)]
         [TestCase(23u, 22u)]
         [TestCase(23u, 23u)]
@@ -199,6 +247,13 @@ namespace DivideSharp.Tests
         [TestCase(23u, 45u)]
         [TestCase(23u, 46u)]
         [TestCase(23u, 47u)]
+        //Branch
+        [TestCase(0x8000_0001u, 1u)]
+        [TestCase(0x8000_0001u, 0x8000_0000u)]
+        [TestCase(0x8000_0001u, 0x8000_0001u)]
+        [TestCase(0x8000_0001u, 0x8000_0002u)]
+        [TestCase(0x8000_0001u, 0xFFFF_FFFEu)]
+        [TestCase(0x8000_0001u, 0xFFFF_FFFFu)]
 
         #endregion Test Cases
 

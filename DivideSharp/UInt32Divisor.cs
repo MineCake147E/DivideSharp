@@ -208,6 +208,12 @@ namespace DivideSharp
                 Strategy = DivisorStrategy.Shift;
                 Shift = CountConsecutiveZeros(divisor);
             }
+            else if (divisor > int.MaxValue)
+            {
+                Multiplier = 1;
+                Strategy = DivisorStrategy.Branch;
+                Shift = 0;
+            }
             else
             {
                 (Multiplier, Strategy, Shift) = GetMagic(divisor);
@@ -241,6 +247,10 @@ namespace DivideSharp
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Divide(uint value)
         {
+            if (Strategy == DivisorStrategy.Branch)
+            {
+                return value >= Divisor ? 1u : 0u;
+            }
             ulong rax = value;
             uint eax;
             ulong multiplier = Multiplier;
@@ -273,27 +283,50 @@ namespace DivideSharp
         {
             ulong rax = value;
             uint eax;
+            uint r9d = value;
             ulong multiplier = Multiplier;
             uint strategy = (uint)Strategy;
-            int shift = Shift;
             uint divisor = Divisor;
-            if ((strategy & 0b10u) > 0)
+            int shift = Shift;    //ecx
+            if ((strategy & 0b100) == 0)
             {
-                rax *= multiplier;
-                if ((strategy & 0b01u) > 0)
+                if ((strategy & 0b10u) > 0)
                 {
-                    uint ecx = value;
-                    eax = (uint)(rax >> 32);
-                    ecx -= eax;
-                    ecx >>= 1;
-                    eax += ecx;
-                    rax = eax;
+                    rax *= multiplier;
+                    if ((strategy & 0b01u) > 0)
+                    {
+                        eax = (uint)(rax >> 32);
+                        r9d -= eax;
+                        r9d >>= 1;
+                        eax += r9d;
+                        rax = eax;
+                    }
+                    eax = (uint)(rax >> shift);
+                    quotient = eax;
+                    eax *= divisor;
+                    return value - eax;
+                }
+                else
+                {
+                    r9d >>= shift;
+                    quotient = r9d;
+                    r9d <<= shift;
+                    return value ^ r9d;
                 }
             }
-            eax = (uint)(rax >> shift);
-            quotient = eax;
-            eax *= divisor;
-            return value - eax;
+            else
+            {
+                if (value >= divisor)
+                {
+                    quotient = 1u;
+                    return value - divisor;
+                }
+                else
+                {
+                    quotient = 0;
+                    return value;
+                }
+            }
         }
 
         /// <summary>
@@ -304,6 +337,12 @@ namespace DivideSharp
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Floor(uint value)
         {
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
+            if ((Strategy & DivisorStrategy.Branch) > 0)
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations
+            {
+                return value >= Divisor ? Divisor : 0u;
+            }
             ulong rax = value;
             uint eax;
             uint divisor = Divisor;
@@ -321,9 +360,14 @@ namespace DivideSharp
                     eax += value;
                     rax = eax;
                 }
+                eax = (uint)(rax >> shift);
+                return eax * divisor;
             }
-            eax = (uint)(rax >> shift);
-            return eax * divisor;
+            else
+            {
+                eax = ~0u << shift;
+                return (uint)rax & eax;
+            }
         }
 
         /// <summary>
@@ -338,24 +382,42 @@ namespace DivideSharp
             uint eax;
             ulong multiplier = Multiplier;
             uint strategy = (uint)Strategy;
-            int shift = Shift;
             uint divisor = Divisor;
-            if ((strategy & 0b10u) > 0)
+            int shift = Shift;    //ecx
+            if ((strategy & 0b100) == 0)
             {
-                rax *= multiplier;
-                if ((strategy & 0b01u) > 0)
+                if ((strategy & 0b10u) > 0)
                 {
-                    uint ecx = value;
-                    eax = (uint)(rax >> 32);
-                    ecx -= eax;
-                    ecx >>= 1;
-                    eax += ecx;
-                    rax = eax;
+                    rax *= multiplier;
+                    if ((strategy & 0b01u) > 0)
+                    {
+                        uint r9d = value;
+                        eax = (uint)(rax >> 32);
+                        r9d -= eax;
+                        r9d >>= 1;
+                        eax += r9d;
+                        rax = eax;
+                    }
+                    eax = (uint)(rax >> shift);
+                    eax *= divisor;
+                    return value - eax;
+                }
+                else
+                {
+                    return value & ~(~0u << shift);
                 }
             }
-            eax = (uint)(rax >> shift);
-            eax *= divisor;
-            return value - eax;
+            else
+            {
+                if (value >= divisor)
+                {
+                    return value - divisor;
+                }
+                else
+                {
+                    return value;
+                }
+            }
         }
 
         /// <summary>
@@ -371,25 +433,39 @@ namespace DivideSharp
             uint eax;
             ulong multiplier = Multiplier;
             uint strategy = (uint)Strategy;
-            int shift = Shift;
             uint divisor = Divisor;
-            if ((strategy & 0b10u) > 0)
+            int shift = Shift;
+            if ((strategy & 0b100) == 0)
             {
-                rax *= multiplier;
-                if ((strategy & 0b01u) > 0)
+                if ((strategy & 0b10u) > 0)
                 {
-                    uint ecx = value;
-                    eax = (uint)(rax >> 32);
-                    ecx -= eax;
-                    ecx >>= 1;
-                    eax += ecx;
-                    rax = eax;
+                    rax *= multiplier;
+                    if ((strategy & 0b01u) > 0)
+                    {
+                        uint ecx = value;
+                        eax = (uint)(rax >> 32);
+                        ecx -= eax;
+                        ecx >>= 1;
+                        eax += ecx;
+                        rax = eax;
+                    }
+                    eax = (uint)(rax >> shift);
+                    eax *= divisor;
+                    largestMultipleOfDivisor = eax;
+                    return value - eax;
+                }
+                else
+                {
+                    var r9d = (~0u << shift);
+                    largestMultipleOfDivisor = value & r9d;
+                    return value & ~r9d;
                 }
             }
-            eax = (uint)(rax >> shift);
-            eax *= divisor;
-            largestMultipleOfDivisor = eax;
-            return value - eax;
+            else
+            {
+                largestMultipleOfDivisor = value >= Divisor ? Divisor : 0u;
+                return value - largestMultipleOfDivisor;
+            }
         }
 
         /// <summary>
