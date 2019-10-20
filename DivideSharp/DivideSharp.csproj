@@ -3,15 +3,16 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-        <Authors>ちーず(･8･)けーき</Authors>
+        <Authors>MineCake1.4.7</Authors>
         <Version>0.0.1</Version>
         <Description>Like RyuJIT does before running, the DivideSharp optimizes an integer division by "mostly constant" values.</Description>
-        <Copyright>Copyright 2019 ちーず(･8･)けーき</Copyright>
+        <Copyright>Copyright 2019 MineCake1.4.7</Copyright>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/MineCake147E/DivideSharp</PackageProjectUrl>
         <RepositoryUrl>https://github.com/MineCake147E/DivideSharp.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Company>MineCake1.4.7</Company>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
