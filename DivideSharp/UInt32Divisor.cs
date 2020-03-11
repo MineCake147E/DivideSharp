@@ -18,7 +18,7 @@ namespace DivideSharp
             new UInt32Divisor(4, 1, DivisorStrategy.Shift, 1),
             new UInt32Divisor(5, 0xcccccccdu, DivisorStrategy.MultiplyShift, 32 + 2),
             new UInt32Divisor(6, 0xaaaaaaabu, DivisorStrategy.MultiplyShift, 32 + 2),
-            new UInt32Divisor(7, 0x24924925u, DivisorStrategy.MultiplyAddShift, 32 + 3),
+            new UInt32Divisor(7, 0x24924925u, DivisorStrategy.MultiplyAddShift, 2),
             new UInt32Divisor(8, 1, DivisorStrategy.Shift, 3),
             new UInt32Divisor(9, 0x38e38e39u, DivisorStrategy.MultiplyShift, 32 + 1),
             new UInt32Divisor(10, 0xcccccccdu, DivisorStrategy.MultiplyShift, 32 + 3),

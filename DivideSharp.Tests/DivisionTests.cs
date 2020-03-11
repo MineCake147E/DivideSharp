@@ -24,6 +24,13 @@ namespace DivideSharp.Tests
         [TestCase(16u, 32u)]
         [TestCase(16u, 33u)]
         //MultiplyAdd
+        [TestCase(7u, 1u)]
+        [TestCase(7u, 18u)]
+        [TestCase(7u, 19u)]
+        [TestCase(7u, 20u)]
+        [TestCase(7u, 37u)]
+        [TestCase(7u, 38u)]
+        [TestCase(7u, 39u)]
         [TestCase(19u, 1u)]
         [TestCase(19u, 18u)]
         [TestCase(19u, 19u)]

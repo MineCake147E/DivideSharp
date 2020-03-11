@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using DivideSharp;
 
 namespace DivisionBenchmark
 {
-    [CoreJob]
-    [CoreRtJob]
+    [SimpleJob(RuntimeMoniker.HostProcess)]
     public class DispatchBenchmarks
     {
         private uint a = 0;
@@ -18,6 +18,7 @@ namespace DivisionBenchmark
 
         private UInt32Divisor divisorBranching;
         private DelegateDispatchedUInt32Divisor divisorJumping;
+        private SingleSwitchUInt32Divisor divisorSwitching;
 
         [GlobalSetup]
         public void Setup()
@@ -26,6 +27,7 @@ namespace DivisionBenchmark
             Console.WriteLine($"Setup with value {ValueToDivideBy}");
             divisorBranching = new UInt32Divisor(ValueToDivideBy);
             divisorJumping = new DelegateDispatchedUInt32Divisor(ValueToDivideBy);
+            divisorSwitching = new SingleSwitchUInt32Divisor(ValueToDivideBy);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -39,14 +41,21 @@ namespace DivisionBenchmark
         public uint EchoValue() => ValueToBeDivided();
 
         /// <summary>
-        /// Winner
+        /// Current(Winner)
         /// </summary>
         /// <returns></returns>
         [Benchmark]
-        public uint DivideSharp() => divisorBranching.Divide(ValueToBeDivided());
+        public uint DivideMultipleIfs() => divisorBranching.Divide(ValueToBeDivided());
 
         /// <summary>
-        /// Loser
+        /// Switch Only Divisor (Loser)
+        /// </summary>
+        /// <returns></returns>
+        [Benchmark]
+        public uint DivideSwitching() => divisorSwitching.Divide(ValueToBeDivided());
+
+        /// <summary>
+        /// Old Loser
         /// </summary>
         /// <returns></returns>
         //[Benchmark]
