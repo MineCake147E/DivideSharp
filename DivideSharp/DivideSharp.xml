@@ -74,14 +74,9 @@
             The strategy for MinValue that only branches.
             </summary>
         </member>
-        <member name="F:DivideSharp.Int32DivisorStrategy.Negate">
-            <summary>
-            The strategy for -1.
-            </summary>
-        </member>
         <member name="T:DivideSharp.IDivisor`1">
             <summary>
-            Defines a base infrastructure of an Divisor.
+            Defines a base infrastructure of a divisor.
             </summary>
         </member>
         <member name="P:DivideSharp.IDivisor`1.Divisor">
@@ -114,20 +109,45 @@
             <param name="quotient">The quotient of the specified numbers.</param>
             <returns>The remainder.</returns>
         </member>
-        <member name="M:DivideSharp.IDivisor`1.Floor(`0)">
+        <member name="T:DivideSharp.IUnsignedDivisor`1">
+            <summary>
+            Defines a base infrastructure of an unsigned divisor.
+            </summary>
+        </member>
+        <member name="M:DivideSharp.IUnsignedDivisor`1.Floor(`0)">
             <summary>
             Returns the largest multiple of <see cref="P:DivideSharp.IDivisor`1.Divisor"/> less than or equal to the specified <paramref name="value"/>.
             </summary>
             <param name="value">The dividend.</param>
             <returns>The largest multiple of <see cref="P:DivideSharp.IDivisor`1.Divisor"/> less than or equal to the specified <paramref name="value"/>.</returns>
         </member>
-        <member name="M:DivideSharp.IDivisor`1.FloorRem(`0,`0@)">
+        <member name="M:DivideSharp.IUnsignedDivisor`1.FloorRem(`0,`0@)">
             <summary>
             Calculates the largest multiple of <see cref="P:DivideSharp.IDivisor`1.Divisor"/> less than or equal to the specified <paramref name="value"/> and the remainder.
             </summary>
             <param name="value">The value.</param>
             <param name="largestMultipleOfDivisor">The largest multiple of <see cref="P:DivideSharp.IDivisor`1.Divisor"/> less than or equal to the specified <paramref name="value"/>.</param>
             <returns>The remainder.</returns>
+        </member>
+        <member name="T:DivideSharp.ISignedDivisor`1">
+            <summary>
+            Defines a base infrastructure of a signed divisor.
+            </summary>
+        </member>
+        <member name="M:DivideSharp.ISignedDivisor`1.AbsFloor(`0)">
+            <summary>
+            Returns a multiple of <see cref="P:DivideSharp.IDivisor`1.Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/>.
+            </summary>
+            <param name="value">The dividend.</param>
+            <returns>A multiple of <see cref="P:DivideSharp.IDivisor`1.Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:DivideSharp.ISignedDivisor`1.AbsFloorRem(`0,`0@)">
+            <summary>
+            Calculates a multiple of <see cref="P:DivideSharp.IDivisor`1.Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/> and stores it in <paramref name="largestMultipleOfDivisor"/>, and Returns the difference between <paramref name="largestMultipleOfDivisor"/> and <paramref name="value"/>.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="largestMultipleOfDivisor">A multiple of <see cref="P:DivideSharp.IDivisor`1.Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/>.</param>
+            <returns>The difference between <paramref name="largestMultipleOfDivisor"/> and <paramref name="value"/>.</returns>
         </member>
         <member name="T:DivideSharp.Int32Divisor">
             <summary>
@@ -206,20 +226,20 @@
             <param name="quotient">The quotient of the specified numbers.</param>
             <returns>The remainder.</returns>
         </member>
-        <member name="M:DivideSharp.Int32Divisor.Floor(System.Int32)">
+        <member name="M:DivideSharp.Int32Divisor.AbsFloor(System.Int32)">
             <summary>
-            Returns the largest multiple of <see cref="P:DivideSharp.Int32Divisor.Divisor"/> less than or equal to the specified <paramref name="value"/>.
+            Returns a multiple of <see cref="P:DivideSharp.Int32Divisor.Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/>.
             </summary>
             <param name="value">The dividend.</param>
-            <returns>The largest multiple of <see cref="P:DivideSharp.Int32Divisor.Divisor"/> less than or equal to the specified <paramref name="value"/>.</returns>
+            <returns>A multiple of <see cref="P:DivideSharp.Int32Divisor.Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/>.</returns>
         </member>
-        <member name="M:DivideSharp.Int32Divisor.FloorRem(System.Int32,System.Int32@)">
+        <member name="M:DivideSharp.Int32Divisor.AbsFloorRem(System.Int32,System.Int32@)">
             <summary>
-            Calculates the largest multiple of <see cref="P:DivideSharp.Int32Divisor.Divisor"/> less than or equal to the specified <paramref name="value"/> and the remainder.
+            Calculates a multiple of <see cref="P:DivideSharp.Int32Divisor.Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/> and stores it in <paramref name="largestMultipleOfDivisor"/>, and Returns the difference between <paramref name="largestMultipleOfDivisor"/> and <paramref name="value"/>.
             </summary>
             <param name="value">The value.</param>
-            <param name="largestMultipleOfDivisor">The largest multiple of <see cref="P:DivideSharp.Int32Divisor.Divisor"/> less than or equal to the specified <paramref name="value"/>.</param>
-            <returns>The remainder.</returns>
+            <param name="largestMultipleOfDivisor">A multiple of <see cref="P:DivideSharp.Int32Divisor.Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/>.</param>
+            <returns>The difference between <paramref name="largestMultipleOfDivisor"/> and <paramref name="value"/>.</returns>
         </member>
         <member name="M:DivideSharp.Int32Divisor.Modulo(System.Int32)">
             <summary>

@@ -5,7 +5,7 @@ using System.Text;
 namespace DivideSharp
 {
     /// <summary>
-    /// Defines a base infrastructure of an Divisor.
+    /// Defines a base infrastructure of a divisor.
     /// </summary>
     public interface IDivisor<T> where T : unmanaged
     {
@@ -38,20 +38,47 @@ namespace DivideSharp
         /// <param name="quotient">The quotient of the specified numbers.</param>
         /// <returns>The remainder.</returns>
         T DivRem(T value, out T quotient);
+    }
 
+    /// <summary>
+    /// Defines a base infrastructure of an unsigned divisor.
+    /// </summary>
+    public interface IUnsignedDivisor<T> : IDivisor<T> where T : unmanaged
+    {
         /// <summary>
-        /// Returns the largest multiple of <see cref="Divisor"/> less than or equal to the specified <paramref name="value"/>.
+        /// Returns the largest multiple of <see cref="IDivisor{T}.Divisor"/> less than or equal to the specified <paramref name="value"/>.
         /// </summary>
         /// <param name="value">The dividend.</param>
-        /// <returns>The largest multiple of <see cref="Divisor"/> less than or equal to the specified <paramref name="value"/>.</returns>
+        /// <returns>The largest multiple of <see cref="IDivisor{T}.Divisor"/> less than or equal to the specified <paramref name="value"/>.</returns>
         T Floor(T value);
 
         /// <summary>
-        /// Calculates the largest multiple of <see cref="Divisor"/> less than or equal to the specified <paramref name="value"/> and the remainder.
+        /// Calculates the largest multiple of <see cref="IDivisor{T}.Divisor"/> less than or equal to the specified <paramref name="value"/> and the remainder.
         /// </summary>
         /// <param name="value">The value.</param>
-        /// <param name="largestMultipleOfDivisor">The largest multiple of <see cref="Divisor"/> less than or equal to the specified <paramref name="value"/>.</param>
+        /// <param name="largestMultipleOfDivisor">The largest multiple of <see cref="IDivisor{T}.Divisor"/> less than or equal to the specified <paramref name="value"/>.</param>
         /// <returns>The remainder.</returns>
         T FloorRem(T value, out T largestMultipleOfDivisor);
+    }
+
+    /// <summary>
+    /// Defines a base infrastructure of a signed divisor.
+    /// </summary>
+    public interface ISignedDivisor<T> : IDivisor<T> where T : unmanaged
+    {
+        /// <summary>
+        /// Returns a multiple of <see cref="IDivisor{T}.Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/>.
+        /// </summary>
+        /// <param name="value">The dividend.</param>
+        /// <returns>A multiple of <see cref="IDivisor{T}.Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/>.</returns>
+        T AbsFloor(T value);
+
+        /// <summary>
+        /// Calculates a multiple of <see cref="IDivisor{T}.Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/> and stores it in <paramref name="largestMultipleOfDivisor"/>, and Returns the difference between <paramref name="largestMultipleOfDivisor"/> and <paramref name="value"/>.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="largestMultipleOfDivisor">A multiple of <see cref="IDivisor{T}.Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/>.</param>
+        /// <returns>The difference between <paramref name="largestMultipleOfDivisor"/> and <paramref name="value"/>.</returns>
+        T AbsFloorRem(T value, out T largestMultipleOfDivisor);
     }
 }

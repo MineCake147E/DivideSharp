@@ -63,6 +63,7 @@ namespace DivideSharp.Tests
         {
             var int32Divisor = new Int32Divisor(divisor);
             var quotient = testDividend / int32Divisor;
+            Console.WriteLine($"quotient:{quotient}");
             Assert.AreEqual(testDividend / divisor, quotient, SerializeDivisor(int32Divisor));
         }
 
@@ -71,6 +72,7 @@ namespace DivideSharp.Tests
         {
             var int32Divisor = new Int32Divisor(divisor);
             var remainder = testDividend % int32Divisor;
+            Console.WriteLine($"remainder:{remainder}");
             Assert.AreEqual(testDividend % divisor, remainder, SerializeDivisor(int32Divisor));
         }
 
@@ -79,6 +81,7 @@ namespace DivideSharp.Tests
         {
             var int32Divisor = new Int32Divisor(divisor);
             var remainder = int32Divisor.DivRem(testDividend, out var quotient);
+            Console.WriteLine($"quotient:{quotient}, remainder:{remainder}");
             Assert.Multiple(() =>
             {
                 Assert.AreEqual(testDividend % divisor, remainder, SerializeDivisor(int32Divisor));
@@ -87,18 +90,20 @@ namespace DivideSharp.Tests
         }
 
         [TestCaseSource(nameof(DivisionTestCaseSource))]
-        public void CalculatesFloorCorrectly(int divisor, int testDividend)
+        public void CalculatesAbsFloorCorrectly(int divisor, int testDividend)
         {
             var int32Divisor = new Int32Divisor(divisor);
-            var rounded = int32Divisor.Floor(testDividend);
+            var rounded = int32Divisor.AbsFloor(testDividend);
+            Console.WriteLine($"rounded:{rounded}");
             Assert.AreEqual(testDividend / divisor * divisor, rounded, SerializeDivisor(int32Divisor));
         }
 
         [TestCaseSource(nameof(DivisionTestCaseSource))]
-        public void CalculatesFloorRemCorrectly(int divisor, int testDividend)
+        public void CalculatesAbsFloorRemCorrectly(int divisor, int testDividend)
         {
             var int32Divisor = new Int32Divisor(divisor);
-            var remainder = int32Divisor.FloorRem(testDividend, out var rounded);
+            var remainder = int32Divisor.AbsFloorRem(testDividend, out var rounded);
+            Console.WriteLine($"rounded:{rounded}, remainder:{remainder}");
             Assert.Multiple(() =>
             {
                 Assert.AreEqual(testDividend % divisor, remainder, SerializeDivisor(int32Divisor));

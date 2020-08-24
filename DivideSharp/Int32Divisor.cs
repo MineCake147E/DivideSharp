@@ -9,7 +9,7 @@ namespace DivideSharp
     /// Divides an <see cref="int"/> value RAPIDLY.
     /// </summary>
     /// <seealso cref="IDivisor{T}" />
-    public readonly struct Int32Divisor : IDivisor<int>, IEquatable<Int32Divisor>
+    public readonly struct Int32Divisor : ISignedDivisor<int>, IEquatable<Int32Divisor>
     {
         #region Static Members
 
@@ -364,12 +364,12 @@ namespace DivideSharp
         }
 
         /// <summary>
-        /// Returns the largest multiple of <see cref="Divisor"/> less than or equal to the specified <paramref name="value"/>.
+        /// Returns a multiple of <see cref="Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/>.
         /// </summary>
         /// <param name="value">The dividend.</param>
-        /// <returns>The largest multiple of <see cref="Divisor"/> less than or equal to the specified <paramref name="value"/>.</returns>
+        /// <returns>A multiple of <see cref="Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Floor(int value)
+        public int AbsFloor(int value)
         {
             uint strategy = (uint)Strategy;
             if (strategy == (uint)Int32DivisorStrategy.Branch)
@@ -414,13 +414,13 @@ namespace DivideSharp
         }
 
         /// <summary>
-        /// Calculates the largest multiple of <see cref="Divisor"/> less than or equal to the specified <paramref name="value"/> and the remainder.
+        /// Calculates a multiple of <see cref="Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/> and stores it in <paramref name="largestMultipleOfDivisor"/>, and Returns the difference between <paramref name="largestMultipleOfDivisor"/> and <paramref name="value"/>.
         /// </summary>
         /// <param name="value">The value.</param>
-        /// <param name="largestMultipleOfDivisor">The largest multiple of <see cref="Divisor"/> less than or equal to the specified <paramref name="value"/>.</param>
-        /// <returns>The remainder.</returns>
+        /// <param name="largestMultipleOfDivisor">A multiple of <see cref="Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/>.</param>
+        /// <returns>The difference between <paramref name="largestMultipleOfDivisor"/> and <paramref name="value"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int FloorRem(int value, out int largestMultipleOfDivisor)
+        public int AbsFloorRem(int value, out int largestMultipleOfDivisor)
         {
             uint strategy = (uint)Strategy;
             if (strategy == (uint)Int32DivisorStrategy.Branch)

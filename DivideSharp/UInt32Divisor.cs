@@ -8,7 +8,7 @@ namespace DivideSharp
     /// Divides an <see cref="uint"/> value RAPIDLY.
     /// </summary>
     /// <seealso cref="IDivisor{T}" />
-    public readonly struct UInt32Divisor : IDivisor<uint>, IEquatable<UInt32Divisor>
+    public readonly struct UInt32Divisor : IUnsignedDivisor<uint>, IEquatable<UInt32Divisor>
     {
         #region Static members
 
@@ -437,6 +437,8 @@ namespace DivideSharp
             }
         }
 
+        #endregion Divisions
+
         /// <summary>
         /// Indicates whether this instance and a specified object are equal.
         /// </summary>
@@ -470,8 +472,6 @@ namespace DivideSharp
             hashCode = (hashCode * -1521134295) + Shift.GetHashCode();
             return hashCode;
         }
-
-        #endregion Divisions
 
         #region Operators
 
