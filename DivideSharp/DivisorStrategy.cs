@@ -74,10 +74,5 @@ namespace DivideSharp
         /// The strategy for MinValue that only branches.
         /// </summary>
         Branch = 0b1000,
-
-        /// <summary>
-        /// The strategy for -1.
-        /// </summary>
-        Negate = 0b1001,
     }
 }

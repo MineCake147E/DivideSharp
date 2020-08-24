@@ -318,17 +318,7 @@ namespace DivideSharp
         public int DivRem(int value, out int quotient)
         {
             uint strategy = (uint)Strategy;
-            if (strategy == (uint)Int32DivisorStrategy.None)
-            {
-                quotient = value;
-                return 0;
-            }
-            else if (strategy == (uint)Int32DivisorStrategy.Negate)
-            {
-                quotient = -value;
-                return 0;
-            }
-            else if (strategy == (uint)Int32DivisorStrategy.Branch)
+            if (strategy == (uint)Int32DivisorStrategy.Branch)
             {
                 bool al = value == int.MinValue;
                 int q = quotient = Unsafe.As<bool, byte>(ref al);
@@ -382,11 +372,7 @@ namespace DivideSharp
         public int Floor(int value)
         {
             uint strategy = (uint)Strategy;
-            if (strategy == (uint)Int32DivisorStrategy.None || strategy == (uint)Int32DivisorStrategy.Negate)
-            {
-                return value;
-            }
-            else if (strategy == (uint)Int32DivisorStrategy.Branch)
+            if (strategy == (uint)Int32DivisorStrategy.Branch)
             {
                 bool al = value == int.MinValue;
                 return Unsafe.As<bool, byte>(ref al) << 31;
@@ -437,12 +423,7 @@ namespace DivideSharp
         public int FloorRem(int value, out int largestMultipleOfDivisor)
         {
             uint strategy = (uint)Strategy;
-            if (strategy == (uint)Int32DivisorStrategy.None || strategy == (uint)Int32DivisorStrategy.Negate)
-            {
-                largestMultipleOfDivisor = value;
-                return 0;
-            }
-            else if (strategy == (uint)Int32DivisorStrategy.Branch)
+            if (strategy == (uint)Int32DivisorStrategy.Branch)
             {
                 bool al = value == int.MinValue;
                 int q = Unsafe.As<bool, byte>(ref al);
@@ -496,11 +477,7 @@ namespace DivideSharp
         public int Modulo(int value)
         {
             uint strategy = (uint)Strategy;
-            if (strategy == (uint)Int32DivisorStrategy.None || strategy == (uint)Int32DivisorStrategy.Negate)
-            {
-                return 0;
-            }
-            else if (strategy == (uint)Int32DivisorStrategy.Branch)
+            if (strategy == (uint)Int32DivisorStrategy.Branch)
             {
                 bool al = value != int.MinValue;
                 return value & -Unsafe.As<bool, byte>(ref al);
