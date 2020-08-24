@@ -1,4 +1,5 @@
 ﻿using System;
+
 using BenchmarkDotNet.Running;
 
 namespace DivisionBenchmark
@@ -7,7 +8,7 @@ namespace DivisionBenchmark
     {
         private static void Main(string[] args)
         {
-            BenchmarkRunner.Run<DispatchBenchmarks>();
+            BenchmarkRunner.Run<Int32DivisionBenchmarks>();
         }
     }
 }

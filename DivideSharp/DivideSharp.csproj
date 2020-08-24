@@ -4,7 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <Authors>MineCake1.4.7</Authors>
-        <Version>0.0.1</Version>
+        <Version>0.0.2</Version>
         <Description>Like RyuJIT does before running, the DivideSharp optimizes an integer division by "mostly constant" values.</Description>
         <Copyright>Copyright 2019 MineCake1.4.7</Copyright>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -18,17 +18,19 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <DocumentationFile>C:\Visual Studio 2019\Repos\DivideSharp\DivideSharp\DivideSharp.xml</DocumentationFile>
         <WarningsAsErrors>NU1605; CS1591</WarningsAsErrors>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DocumentationFile>C:\Visual Studio 2019\Repos\DivideSharp\DivideSharp\DivideSharp.xml</DocumentationFile>
         <WarningsAsErrors>NU1605; CS1591</WarningsAsErrors>
         <WarningLevel>3</WarningLevel>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Memory" Version="4.5.3" />
+        <PackageReference Include="System.Memory" Version="4.5.4" />
         <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.7.1" />
     </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+
 using DivideSharp;
 
 namespace DivisionBenchmark
@@ -16,14 +17,14 @@ namespace DivisionBenchmark
         {
             switch (Strategy)
             {
-                case DivisorStrategy.Branch:
+                case UInt32DivisorStrategy.Branch:
                     return value >= Divisor ? 1u : 0u;
-                case DivisorStrategy.Shift:
+                case UInt32DivisorStrategy.Shift:
                     {
                         int shift = Shift;
                         return value >> shift;
                     }
-                case DivisorStrategy.MultiplyShift:
+                case UInt32DivisorStrategy.MultiplyShift:
                     {
                         ulong rax = value;
                         uint eax;
@@ -33,7 +34,7 @@ namespace DivisionBenchmark
                         eax = (uint)(rax >> shift);
                         return eax;
                     }
-                case DivisorStrategy.MultiplyAddShift:
+                case UInt32DivisorStrategy.MultiplyAddShift:
                     {
                         ulong rax = value;
                         uint eax;
@@ -65,7 +66,7 @@ namespace DivisionBenchmark
             int shift = Shift;    //ecx
             switch (strategy)
             {
-                case DivisorStrategy.Branch:
+                case UInt32DivisorStrategy.Branch:
                     if (value >= divisor)
                     {
                         quotient = 1u;
@@ -76,14 +77,14 @@ namespace DivisionBenchmark
                         quotient = 0;
                         return value;
                     }
-                case DivisorStrategy.Shift:
+                case UInt32DivisorStrategy.Shift:
                     {
                         r9d >>= shift;
                         quotient = r9d;
                         r9d <<= shift;
                         return value ^ r9d;
                     }
-                case DivisorStrategy.MultiplyShift:
+                case UInt32DivisorStrategy.MultiplyShift:
                     {
                         rax *= multiplier;
                         eax = (uint)(rax >> shift);
@@ -91,7 +92,7 @@ namespace DivisionBenchmark
                         eax *= divisor;
                         return value - eax;
                     }
-                case DivisorStrategy.MultiplyAddShift:
+                case UInt32DivisorStrategy.MultiplyAddShift:
                     {
                         rax *= multiplier;
                         eax = (uint)(rax >> 32);
@@ -114,7 +115,7 @@ namespace DivisionBenchmark
         public uint Floor(uint value)
         {
 #pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
-            if ((Strategy & DivisorStrategy.Branch) > 0)
+            if ((Strategy & UInt32DivisorStrategy.Branch) > 0)
 #pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations
             {
                 return value >= Divisor ? Divisor : 0u;
@@ -236,19 +237,19 @@ namespace DivisionBenchmark
         #region Static members
 
         private static ReadOnlySpan<SingleSwitchUInt32Divisor> Divisors => new SingleSwitchUInt32Divisor[] {
-        new SingleSwitchUInt32Divisor (3, 0xaaaaaaabu, DivisorStrategy.MultiplyShift, 32 + 1),
-        new SingleSwitchUInt32Divisor (4, 1, DivisorStrategy.Shift, 1),
-        new SingleSwitchUInt32Divisor (5, 0xcccccccdu, DivisorStrategy.MultiplyShift, 32 + 2),
-        new SingleSwitchUInt32Divisor (6, 0xaaaaaaabu, DivisorStrategy.MultiplyShift, 32 + 2),
-        new SingleSwitchUInt32Divisor (7, 0x24924925u, DivisorStrategy.MultiplyAddShift, 32 + 3),
-        new SingleSwitchUInt32Divisor (8, 1, DivisorStrategy.Shift, 3),
-        new SingleSwitchUInt32Divisor (9, 0x38e38e39u, DivisorStrategy.MultiplyShift, 32 + 1),
-        new SingleSwitchUInt32Divisor (10, 0xcccccccdu, DivisorStrategy.MultiplyShift, 32 + 3),
-        new SingleSwitchUInt32Divisor (11, 0xba2e8ba3u, DivisorStrategy.MultiplyShift, 32 + 3),
-        new SingleSwitchUInt32Divisor (12, 0xaaaaaaabu, DivisorStrategy.MultiplyShift, 32 + 3),
+        new SingleSwitchUInt32Divisor (3, 0xaaaaaaabu, UInt32DivisorStrategy.MultiplyShift, 32 + 1),
+        new SingleSwitchUInt32Divisor (4, 1, UInt32DivisorStrategy.Shift, 1),
+        new SingleSwitchUInt32Divisor (5, 0xcccccccdu, UInt32DivisorStrategy.MultiplyShift, 32 + 2),
+        new SingleSwitchUInt32Divisor (6, 0xaaaaaaabu, UInt32DivisorStrategy.MultiplyShift, 32 + 2),
+        new SingleSwitchUInt32Divisor (7, 0x24924925u, UInt32DivisorStrategy.MultiplyAddShift, 32 + 3),
+        new SingleSwitchUInt32Divisor (8, 1, UInt32DivisorStrategy.Shift, 3),
+        new SingleSwitchUInt32Divisor (9, 0x38e38e39u, UInt32DivisorStrategy.MultiplyShift, 32 + 1),
+        new SingleSwitchUInt32Divisor (10, 0xcccccccdu, UInt32DivisorStrategy.MultiplyShift, 32 + 3),
+        new SingleSwitchUInt32Divisor (11, 0xba2e8ba3u, UInt32DivisorStrategy.MultiplyShift, 32 + 3),
+        new SingleSwitchUInt32Divisor (12, 0xaaaaaaabu, UInt32DivisorStrategy.MultiplyShift, 32 + 3),
     };
 
-        private static (uint multiplier, DivisorStrategy strategy, int shift) GetMagic(uint divisor)
+        private static (uint multiplier, UInt32DivisorStrategy strategy, int shift) GetMagic(uint divisor)
         {
             //Copied from CoreCLR, and modified by MineCake1.4.7
 
@@ -287,7 +288,7 @@ namespace DivisionBenchmark
             const int BitsMinus1 = Bits - 1;
             const uint TwoNMinus1 = 1u << BitsMinus1;
 
-            var strategy = DivisorStrategy.MultiplyShift;
+            var strategy = UInt32DivisorStrategy.MultiplyShift;
             uint nc = (uint)(-1 - (-divisor % divisor));
 
             int p = BitsMinus1;
@@ -316,7 +317,7 @@ namespace DivisionBenchmark
                 {
                     if (q2 >= (TwoNMinus1 - 1))
                     {
-                        strategy = DivisorStrategy.MultiplyAddShift;
+                        strategy = UInt32DivisorStrategy.MultiplyAddShift;
                     }
 
                     q2 = (2 * q2) + 1;
@@ -326,7 +327,7 @@ namespace DivisionBenchmark
                 {
                     if (q2 >= TwoNMinus1)
                     {
-                        strategy = DivisorStrategy.MultiplyAddShift;
+                        strategy = UInt32DivisorStrategy.MultiplyAddShift;
                     }
 
                     q2 = 2 * q2;
@@ -335,7 +336,7 @@ namespace DivisionBenchmark
 
                 delta = divisor - 1 - r2;
             } while ((p < (Bits * 2)) && ((q1 < delta) || ((q1 == delta) && (r1 == 0))));
-            return (q2 + 1, strategy, strategy == DivisorStrategy.MultiplyAddShift ? p - Bits - 1 : p); // resulting magic number
+            return (q2 + 1, strategy, strategy == UInt32DivisorStrategy.MultiplyAddShift ? p - Bits - 1 : p); // resulting magic number
         }
 
         private static ReadOnlySpan<byte> TrailingZeroCountDeBruijn => new byte[32] {
@@ -401,7 +402,7 @@ namespace DivisionBenchmark
 
         public uint Multiplier { get; }
 
-        public DivisorStrategy Strategy { get; }
+        public UInt32DivisorStrategy Strategy { get; }
 
         public int Shift { get; }
 
@@ -416,19 +417,19 @@ namespace DivisionBenchmark
             if (divisor == 1)
             {
                 Multiplier = 1;
-                Strategy = DivisorStrategy.None;
+                Strategy = UInt32DivisorStrategy.None;
                 Shift = 0;
             }
             else if (divisor != 0 && (divisor & (divisor - 1)) == 0)
             {
                 Multiplier = 1;
-                Strategy = DivisorStrategy.Shift;
+                Strategy = UInt32DivisorStrategy.Shift;
                 Shift = CountConsecutiveZeros(divisor);
             }
             else if (divisor > int.MaxValue)
             {
                 Multiplier = 1;
-                Strategy = DivisorStrategy.Branch;
+                Strategy = UInt32DivisorStrategy.Branch;
                 Shift = 0;
             }
             else
@@ -437,7 +438,7 @@ namespace DivisionBenchmark
             }
         }
 
-        private SingleSwitchUInt32Divisor(uint divisor, uint multiplier, DivisorStrategy strategy, int shift)
+        private SingleSwitchUInt32Divisor(uint divisor, uint multiplier, UInt32DivisorStrategy strategy, int shift)
         {
             Divisor = divisor;
             Multiplier = multiplier;

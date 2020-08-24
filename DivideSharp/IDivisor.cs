@@ -18,30 +18,6 @@ namespace DivideSharp
         T Divisor { get; }
 
         /// <summary>
-        /// Gets the multiplier for actual "division".
-        /// </summary>
-        /// <value>
-        /// The multiplier.
-        /// </value>
-        T Multiplier { get; }
-
-        /// <summary>
-        /// Gets the strategy of a division.
-        /// </summary>
-        /// <value>
-        /// The strategy of a division.
-        /// </value>
-        DivisorStrategy Strategy { get; }
-
-        /// <summary>
-        /// Gets the number of bits to shift for actual "division".
-        /// </summary>
-        /// <value>
-        /// The number of bits to shift right.
-        /// </value>
-        int Shift { get; }
-
-        /// <summary>
         /// Divides the specified value by <see cref="Divisor"/>.
         /// </summary>
         /// <param name="value">The dividend.</param>

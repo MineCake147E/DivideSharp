@@ -14,19 +14,19 @@ namespace DivideSharp
 
         private static ReadOnlySpan<UInt32Divisor> Divisors => new UInt32Divisor[]
         {
-            new UInt32Divisor(3, 0xaaaaaaabu, DivisorStrategy.MultiplyShift, 32 + 1),
-            new UInt32Divisor(4, 1, DivisorStrategy.Shift, 1),
-            new UInt32Divisor(5, 0xcccccccdu, DivisorStrategy.MultiplyShift, 32 + 2),
-            new UInt32Divisor(6, 0xaaaaaaabu, DivisorStrategy.MultiplyShift, 32 + 2),
-            new UInt32Divisor(7, 0x24924925u, DivisorStrategy.MultiplyAddShift, 2),
-            new UInt32Divisor(8, 1, DivisorStrategy.Shift, 3),
-            new UInt32Divisor(9, 0x38e38e39u, DivisorStrategy.MultiplyShift, 32 + 1),
-            new UInt32Divisor(10, 0xcccccccdu, DivisorStrategy.MultiplyShift, 32 + 3),
-            new UInt32Divisor(11, 0xba2e8ba3u, DivisorStrategy.MultiplyShift, 32 + 3),
-            new UInt32Divisor(12, 0xaaaaaaabu, DivisorStrategy.MultiplyShift, 32 + 3),
+            new UInt32Divisor(3, 0xaaaaaaabu, UInt32DivisorStrategy.MultiplyShift, 32 + 1),
+            new UInt32Divisor(4, 1, UInt32DivisorStrategy.Shift, 1),
+            new UInt32Divisor(5, 0xcccccccdu, UInt32DivisorStrategy.MultiplyShift, 32 + 2),
+            new UInt32Divisor(6, 0xaaaaaaabu, UInt32DivisorStrategy.MultiplyShift, 32 + 2),
+            new UInt32Divisor(7, 0x24924925u, UInt32DivisorStrategy.MultiplyAddShift, 2),
+            new UInt32Divisor(8, 1, UInt32DivisorStrategy.Shift, 3),
+            new UInt32Divisor(9, 0x38e38e39u, UInt32DivisorStrategy.MultiplyShift, 32 + 1),
+            new UInt32Divisor(10, 0xcccccccdu, UInt32DivisorStrategy.MultiplyShift, 32 + 3),
+            new UInt32Divisor(11, 0xba2e8ba3u, UInt32DivisorStrategy.MultiplyShift, 32 + 3),
+            new UInt32Divisor(12, 0xaaaaaaabu, UInt32DivisorStrategy.MultiplyShift, 32 + 3),
         };
 
-        private static (uint multiplier, DivisorStrategy strategy, int shift) GetMagic(uint divisor)
+        private static (uint multiplier, UInt32DivisorStrategy strategy, byte shift) GetMagic(uint divisor)
         {
             //Copied from CoreCLR, and modified by MineCake1.4.7
 
@@ -65,7 +65,7 @@ namespace DivideSharp
             const int BitsMinus1 = Bits - 1;
             const uint TwoNMinus1 = 1u << BitsMinus1;
 
-            var strategy = DivisorStrategy.MultiplyShift;
+            var strategy = UInt32DivisorStrategy.MultiplyShift;
             uint nc = (uint)(-1 - (-divisor % divisor));
 
             int p = BitsMinus1;
@@ -94,7 +94,7 @@ namespace DivideSharp
                 {
                     if (q2 >= (TwoNMinus1 - 1))
                     {
-                        strategy = DivisorStrategy.MultiplyAddShift;
+                        strategy = UInt32DivisorStrategy.MultiplyAddShift;
                     }
 
                     q2 = (2 * q2) + 1;
@@ -104,7 +104,7 @@ namespace DivideSharp
                 {
                     if (q2 >= TwoNMinus1)
                     {
-                        strategy = DivisorStrategy.MultiplyAddShift;
+                        strategy = UInt32DivisorStrategy.MultiplyAddShift;
                     }
 
                     q2 = 2 * q2;
@@ -113,38 +113,7 @@ namespace DivideSharp
 
                 delta = divisor - 1 - r2;
             } while ((p < (Bits * 2)) && ((q1 < delta) || ((q1 == delta) && (r1 == 0))));
-            return (q2 + 1, strategy, strategy == DivisorStrategy.MultiplyAddShift ? p - Bits - 1 : p);     // resulting magic number
-        }
-
-        private static ReadOnlySpan<byte> TrailingZeroCountDeBruijn => new byte[32]
-        {
-            //https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightMultLookup
-            0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8,
-            31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9
-        };
-
-        /// <summary>
-        /// Counts the consecutive zero bits on the right.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int CountConsecutiveZeros(uint value)
-        {
-            //https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightMultLookup
-            unchecked
-            {
-                if (value == 0)
-                {
-                    return 32;
-                }
-                long v2 = -value;
-                var index = (((uint)v2 & value) * 0x077C_B531u) >> 27;
-
-                return Unsafe.AddByteOffset(
-                    ref MemoryMarshal.GetReference(TrailingZeroCountDeBruijn),
-                    (IntPtr)(int)index);
-            }
+            return (q2 + 1, strategy, (byte)(strategy == UInt32DivisorStrategy.MultiplyAddShift ? p - Bits - 1 : p));     // resulting magic number
         }
 
         #endregion Static members
@@ -173,7 +142,7 @@ namespace DivideSharp
         /// <value>
         /// The strategy of a division.
         /// </value>
-        public DivisorStrategy Strategy { get; }
+        public UInt32DivisorStrategy Strategy { get; }
 
         /// <summary>
         /// Gets the number of bits to shift for actual "division".
@@ -181,7 +150,7 @@ namespace DivideSharp
         /// <value>
         /// The number of bits to shift right.
         /// </value>
-        public int Shift { get; }
+        public byte Shift { get; }
 
         #endregion Properties
 
@@ -199,20 +168,20 @@ namespace DivideSharp
             if (divisor == 1)
             {
                 Multiplier = 1;
-                Strategy = DivisorStrategy.None;
+                Strategy = UInt32DivisorStrategy.None;
+                Shift = 0;
+            }
+            else if (divisor > int.MaxValue)
+            {
+                Multiplier = 1;
+                Strategy = UInt32DivisorStrategy.Branch;
                 Shift = 0;
             }
             else if (divisor != 0 && (divisor & (divisor - 1)) == 0)
             {
                 Multiplier = 1;
-                Strategy = DivisorStrategy.Shift;
-                Shift = CountConsecutiveZeros(divisor);
-            }
-            else if (divisor > int.MaxValue)
-            {
-                Multiplier = 1;
-                Strategy = DivisorStrategy.Branch;
-                Shift = 0;
+                Strategy = UInt32DivisorStrategy.Shift;
+                Shift = (byte)Utils.CountConsecutiveZeros(divisor);
             }
             else
             {
@@ -227,7 +196,7 @@ namespace DivideSharp
         /// <param name="multiplier">The multiplier.</param>
         /// <param name="strategy">The strategy.</param>
         /// <param name="shift">The shift.</param>
-        private UInt32Divisor(uint divisor, uint multiplier, DivisorStrategy strategy, int shift)
+        private UInt32Divisor(uint divisor, uint multiplier, UInt32DivisorStrategy strategy, byte shift)
         {
             Divisor = divisor;
             Multiplier = multiplier;
@@ -240,14 +209,14 @@ namespace DivideSharp
         #region Divisions
 
         /// <summary>
-        /// Divides the specified value by <see cref="Divisor"/>.
+        /// Divides the specified <paramref name="value"/> by <see cref="Divisor"/>.
         /// </summary>
         /// <param name="value">The dividend.</param>
         /// <returns>The value divided by <see cref="Divisor"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Divide(uint value)
         {
-            if (Strategy == DivisorStrategy.Branch)
+            if (Strategy == UInt32DivisorStrategy.Branch)
             {
                 return value >= Divisor ? 1u : 0u;
             }
@@ -273,7 +242,7 @@ namespace DivideSharp
         }
 
         /// <summary>
-        /// Calculates the quotient of two 32-bit signed integers (<paramref name="value"/> and <see cref="Divisor"/>) and the remainder.
+        /// Calculates the quotient of two 32-bit unsigned integers (<paramref name="value"/> and <see cref="Divisor"/>) and the remainder.
         /// </summary>
         /// <param name="value">The dividend.</param>
         /// <param name="quotient">The quotient of the specified numbers.</param>
@@ -338,7 +307,7 @@ namespace DivideSharp
         public uint Floor(uint value)
         {
 #pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
-            if ((Strategy & DivisorStrategy.Branch) > 0)
+            if ((Strategy & UInt32DivisorStrategy.Branch) > 0)
 #pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations
             {
                 return value >= Divisor ? Divisor : 0u;
@@ -521,6 +490,7 @@ namespace DivideSharp
         /// <param name="left">The dividend.</param>
         /// <param name="right">The divisor.</param>
         /// <returns>The remainder resulting from dividing <paramref name="left"/> by <paramref name="right"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint operator %(uint left, UInt32Divisor right) => right.Modulo(left);
 
         /// <summary>

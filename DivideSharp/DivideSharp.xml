@@ -4,34 +4,79 @@
         <name>DivideSharp</name>
     </assembly>
     <members>
-        <member name="T:DivideSharp.DivisorStrategy">
+        <member name="T:DivideSharp.UInt32DivisorStrategy">
             <summary>
-            Represents a strategy of division.
+            Represents a strategy of division for <see cref="T:DivideSharp.UInt32Divisor"/>.
             </summary>
         </member>
-        <member name="F:DivideSharp.DivisorStrategy.None">
+        <member name="F:DivideSharp.UInt32DivisorStrategy.None">
             <summary>
             The strategy for dividing by 1.
             </summary>
         </member>
-        <member name="F:DivideSharp.DivisorStrategy.Shift">
+        <member name="F:DivideSharp.UInt32DivisorStrategy.Shift">
             <summary>
             The strategy that only shifts.
             </summary>
         </member>
-        <member name="F:DivideSharp.DivisorStrategy.MultiplyShift">
+        <member name="F:DivideSharp.UInt32DivisorStrategy.MultiplyShift">
             <summary>
             The strategy multiplies and shifts.
             </summary>
         </member>
-        <member name="F:DivideSharp.DivisorStrategy.MultiplyAddShift">
+        <member name="F:DivideSharp.UInt32DivisorStrategy.MultiplyAddShift">
             <summary>
             The strategy multiplies, adds, and shifts.
             </summary>
         </member>
-        <member name="F:DivideSharp.DivisorStrategy.Branch">
+        <member name="F:DivideSharp.UInt32DivisorStrategy.Branch">
             <summary>
             The strategy for >MaxValue/2 that only branches.
+            </summary>
+        </member>
+        <member name="T:DivideSharp.Int32DivisorStrategy">
+            <summary>
+            Represents a strategy of division for <see cref="T:DivideSharp.Int32Divisor"/>.
+            </summary>
+        </member>
+        <member name="F:DivideSharp.Int32DivisorStrategy.None">
+            <summary>
+            The strategy for dividing by 1.
+            </summary>
+        </member>
+        <member name="F:DivideSharp.Int32DivisorStrategy.PowerOfTwoPositive">
+            <summary>
+            The strategy for dividing by the number that is power of two.
+            </summary>
+        </member>
+        <member name="F:DivideSharp.Int32DivisorStrategy.PowerOfTwoNegative">
+            <summary>
+            The strategy for dividing by the negated number that is power of two.
+            </summary>
+        </member>
+        <member name="F:DivideSharp.Int32DivisorStrategy.MultiplyShift">
+            <summary>
+            The strategy multiplies and shifts.
+            </summary>
+        </member>
+        <member name="F:DivideSharp.Int32DivisorStrategy.MultiplyAddShift">
+            <summary>
+            The strategy multiplies, adds, and shifts.
+            </summary>
+        </member>
+        <member name="F:DivideSharp.Int32DivisorStrategy.MultiplySubtractShift">
+            <summary>
+            The strategy multiplies, subtracts, and shifts.
+            </summary>
+        </member>
+        <member name="F:DivideSharp.Int32DivisorStrategy.Branch">
+            <summary>
+            The strategy for MinValue that only branches.
+            </summary>
+        </member>
+        <member name="F:DivideSharp.Int32DivisorStrategy.Negate">
+            <summary>
+            The strategy for -1.
             </summary>
         </member>
         <member name="T:DivideSharp.IDivisor`1">
@@ -45,30 +90,6 @@
             </summary>
             <value>
             The divisor.
-            </value>
-        </member>
-        <member name="P:DivideSharp.IDivisor`1.Multiplier">
-            <summary>
-            Gets the multiplier for actual "division".
-            </summary>
-            <value>
-            The multiplier.
-            </value>
-        </member>
-        <member name="P:DivideSharp.IDivisor`1.Strategy">
-            <summary>
-            Gets the strategy of a division.
-            </summary>
-            <value>
-            The strategy of a division.
-            </value>
-        </member>
-        <member name="P:DivideSharp.IDivisor`1.Shift">
-            <summary>
-            Gets the number of bits to shift for actual "division".
-            </summary>
-            <value>
-            The number of bits to shift right.
             </value>
         </member>
         <member name="M:DivideSharp.IDivisor`1.Divide(`0)">
@@ -108,18 +129,172 @@
             <param name="largestMultipleOfDivisor">The largest multiple of <see cref="P:DivideSharp.IDivisor`1.Divisor"/> less than or equal to the specified <paramref name="value"/>.</param>
             <returns>The remainder.</returns>
         </member>
+        <member name="T:DivideSharp.Int32Divisor">
+            <summary>
+            Divides an <see cref="T:System.Int32"/> value RAPIDLY.
+            </summary>
+            <seealso cref="T:DivideSharp.IDivisor`1" />
+        </member>
+        <member name="P:DivideSharp.Int32Divisor.Divisor">
+            <summary>
+            Gets the divisor.
+            </summary>
+            <value>
+            The divisor.
+            </value>
+        </member>
+        <member name="P:DivideSharp.Int32Divisor.Multiplier">
+            <summary>
+            Gets the multiplier for actual "division".
+            </summary>
+            <value>
+            The multiplier.
+            </value>
+        </member>
+        <member name="P:DivideSharp.Int32Divisor.Strategy">
+            <summary>
+            Gets the strategy of a division.
+            </summary>
+            <value>
+            The strategy of a division.
+            </value>
+        </member>
+        <member name="P:DivideSharp.Int32Divisor.Shift">
+            <summary>
+            Gets the number of bits to shift for actual "division".
+            </summary>
+            <value>
+            The number of bits to shift right.
+            </value>
+        </member>
+        <member name="P:DivideSharp.Int32Divisor.Mask">
+            <summary>
+            Gets the mask to divide.
+            </summary>
+            <value>
+            The mask.
+            </value>
+        </member>
+        <member name="M:DivideSharp.Int32Divisor.#ctor(System.Int32,System.Int32,DivideSharp.Int32DivisorStrategy,System.Byte)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DivideSharp.Int32Divisor"/> struct.
+            </summary>
+            <param name="divisor">The divisor.</param>
+            <param name="multiplier">The multiplier.</param>
+            <param name="strategy">The strategy.</param>
+            <param name="shift">The shift.</param>
+        </member>
+        <member name="M:DivideSharp.Int32Divisor.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DivideSharp.Int32Divisor"/> struct.
+            </summary>
+            <param name="divisor">The divisor.</param>
+            <exception cref="T:System.DivideByZeroException"></exception>
+        </member>
+        <member name="M:DivideSharp.Int32Divisor.Divide(System.Int32)">
+            <summary>
+            Divides the specified <paramref name="value"/> by <see cref="P:DivideSharp.Int32Divisor.Divisor"/>.
+            </summary>
+            <param name="value">The dividend.</param>
+            <returns>The value divided by <see cref="P:DivideSharp.Int32Divisor.Divisor"/>.</returns>
+        </member>
+        <member name="M:DivideSharp.Int32Divisor.DivRem(System.Int32,System.Int32@)">
+            <summary>
+            Calculates the quotient of two 32-bit signed integers (<paramref name="value"/> and <see cref="P:DivideSharp.Int32Divisor.Divisor"/>) and the remainder.
+            </summary>
+            <param name="value">The dividend.</param>
+            <param name="quotient">The quotient of the specified numbers.</param>
+            <returns>The remainder.</returns>
+        </member>
+        <member name="M:DivideSharp.Int32Divisor.Floor(System.Int32)">
+            <summary>
+            Returns the largest multiple of <see cref="P:DivideSharp.Int32Divisor.Divisor"/> less than or equal to the specified <paramref name="value"/>.
+            </summary>
+            <param name="value">The dividend.</param>
+            <returns>The largest multiple of <see cref="P:DivideSharp.Int32Divisor.Divisor"/> less than or equal to the specified <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:DivideSharp.Int32Divisor.FloorRem(System.Int32,System.Int32@)">
+            <summary>
+            Calculates the largest multiple of <see cref="P:DivideSharp.Int32Divisor.Divisor"/> less than or equal to the specified <paramref name="value"/> and the remainder.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="largestMultipleOfDivisor">The largest multiple of <see cref="P:DivideSharp.Int32Divisor.Divisor"/> less than or equal to the specified <paramref name="value"/>.</param>
+            <returns>The remainder.</returns>
+        </member>
+        <member name="M:DivideSharp.Int32Divisor.Modulo(System.Int32)">
+            <summary>
+            Calculates the remainder by <see cref="P:DivideSharp.Int32Divisor.Divisor"/> of the specified <paramref name="value"/>.
+            </summary>
+            <param name="value">The dividend.</param>
+            <returns>The remainder.</returns>
+        </member>
+        <member name="M:DivideSharp.Int32Divisor.Equals(System.Object)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+            <param name="obj">An object to compare with this object.</param>
+            <returns>
+              <c>true</c> if the current object is equal to the obj parameter; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:DivideSharp.Int32Divisor.Equals(DivideSharp.Int32Divisor)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+            <param name="other">An object to compare with this object.</param>
+            <returns>
+              <c>true</c> if the current object is equal to the other parameter; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:DivideSharp.Int32Divisor.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+            </returns>
+        </member>
+        <member name="M:DivideSharp.Int32Divisor.op_Division(System.Int32,DivideSharp.Int32Divisor)">
+            <summary>
+            Rapidly divides the specified <see cref="T:System.Int32"/> value with <paramref name="right"/>'s <see cref="P:DivideSharp.Int32Divisor.Divisor"/>.
+            </summary>
+            <param name="left">The dividend.</param>
+            <param name="right">The divisor.</param>
+            <returns>The result of dividing <paramref name="left"/> by <paramref name="right"/>.</returns>
+        </member>
+        <member name="M:DivideSharp.Int32Divisor.op_Modulus(System.Int32,DivideSharp.Int32Divisor)">
+            <summary>
+            Rapidly returns the remainder resulting from dividing the specified <see cref="T:System.Int32"/> value with <paramref name="right"/>'s <see cref="P:DivideSharp.Int32Divisor.Divisor"/>.
+            </summary>
+            <param name="left">The dividend.</param>
+            <param name="right">The divisor.</param>
+            <returns>The remainder resulting from dividing <paramref name="left"/> by <paramref name="right"/>.</returns>
+        </member>
+        <member name="M:DivideSharp.Int32Divisor.op_Equality(DivideSharp.Int32Divisor,DivideSharp.Int32Divisor)">
+            <summary>
+            Indicates whether the values of two specified <see cref="T:DivideSharp.Int32Divisor"/> objects are equal.
+            </summary>
+            <param name="left">The first <see cref="T:DivideSharp.Int32Divisor"/> to compare.</param>
+            <param name="right">The second <see cref="T:DivideSharp.Int32Divisor"/> to compare.</param>
+            <returns>
+              <c>true</c> if the left is the same as the right; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:DivideSharp.Int32Divisor.op_Inequality(DivideSharp.Int32Divisor,DivideSharp.Int32Divisor)">
+            <summary>
+            Indicates whether the values of two specified <see cref="T:DivideSharp.Int32Divisor"/> objects are not equal.
+            </summary>
+            <param name="left">The first <see cref="T:DivideSharp.Int32Divisor"/> to compare.</param>
+            <param name="right">The second  <see cref="T:DivideSharp.Int32Divisor"/> to compare.</param>
+            <returns>
+              <c>true</c> if left and right are not equal; otherwise, <c>false</c>.
+            </returns>
+        </member>
         <member name="T:DivideSharp.UInt32Divisor">
             <summary>
             Divides an <see cref="T:System.UInt32"/> value RAPIDLY.
             </summary>
             <seealso cref="T:DivideSharp.IDivisor`1" />
-        </member>
-        <member name="M:DivideSharp.UInt32Divisor.CountConsecutiveZeros(System.UInt32)">
-            <summary>
-            Counts the consecutive zero bits on the right.
-            </summary>
-            <param name="value">The value.</param>
-            <returns></returns>
         </member>
         <member name="P:DivideSharp.UInt32Divisor.Divisor">
             <summary>
@@ -160,7 +335,7 @@
             <param name="divisor">The divisor.</param>
             <exception cref="T:System.DivideByZeroException"></exception>
         </member>
-        <member name="M:DivideSharp.UInt32Divisor.#ctor(System.UInt32,System.UInt32,DivideSharp.DivisorStrategy,System.Int32)">
+        <member name="M:DivideSharp.UInt32Divisor.#ctor(System.UInt32,System.UInt32,DivideSharp.UInt32DivisorStrategy,System.Byte)">
             <summary>
             Initializes a new instance of the <see cref="T:DivideSharp.UInt32Divisor"/> struct.
             </summary>
@@ -171,14 +346,14 @@
         </member>
         <member name="M:DivideSharp.UInt32Divisor.Divide(System.UInt32)">
             <summary>
-            Divides the specified value by <see cref="P:DivideSharp.UInt32Divisor.Divisor"/>.
+            Divides the specified <paramref name="value"/> by <see cref="P:DivideSharp.UInt32Divisor.Divisor"/>.
             </summary>
             <param name="value">The dividend.</param>
             <returns>The value divided by <see cref="P:DivideSharp.UInt32Divisor.Divisor"/>.</returns>
         </member>
         <member name="M:DivideSharp.UInt32Divisor.DivRem(System.UInt32,System.UInt32@)">
             <summary>
-            Calculates the quotient of two 32-bit signed integers (<paramref name="value"/> and <see cref="P:DivideSharp.UInt32Divisor.Divisor"/>) and the remainder.
+            Calculates the quotient of two 32-bit unsigned integers (<paramref name="value"/> and <see cref="P:DivideSharp.UInt32Divisor.Divisor"/>) and the remainder.
             </summary>
             <param name="value">The dividend.</param>
             <param name="quotient">The quotient of the specified numbers.</param>
@@ -268,6 +443,11 @@
               <c>true</c> if left and right are not equal; otherwise, <c>false</c>.
             </returns>
         </member>
+        <member name="T:DivideSharp.Utils">
+            <summary>
+            Exposes some utility functions
+            </summary>
+        </member>
         <member name="M:DivideSharp.Utils.CountBits(System.UInt64)">
             <summary>
             same as floor(log2(i))
@@ -294,6 +474,28 @@
             same as floor(log2(i))
             </summary>
             <param name="i"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DivideSharp.Utils.CountConsecutiveZeros(System.UInt32)">
+            <summary>
+            Counts the consecutive zero bits on the right.
+            </summary>
+            <param name="value">The value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:DivideSharp.Utils.MultiplyHigh(System.Int64,System.Int64)">
+            <summary>
+            Multiplies the specified <paramref name="x"/> and <paramref name="y"/> and returns the high part of whole 128bit result.
+            </summary>
+            <param name="x">The x.</param>
+            <param name="y">The y.</param>
+            <returns></returns>
+        </member>
+        <member name="M:DivideSharp.Utils.Abs(System.Int32)">
+            <summary>
+            Returns the absolute value of the specified <paramref name="value"/>.
+            </summary>
+            <param name="value">The value.</param>
             <returns></returns>
         </member>
     </members>

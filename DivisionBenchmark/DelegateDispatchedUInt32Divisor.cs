@@ -16,13 +16,13 @@ namespace DivisionBenchmark
             Shift = w.Shift;
             switch (Strategy)
             {
-                case DivisorStrategy.Shift:
+                case UInt32DivisorStrategy.Shift:
                     DivideFunc = ShiftOnly;
                     break;
-                case DivisorStrategy.MultiplyShift:
+                case UInt32DivisorStrategy.MultiplyShift:
                     DivideFunc = Multiply;
                     break;
-                case DivisorStrategy.MultiplyAddShift:
+                case UInt32DivisorStrategy.MultiplyAddShift:
                     DivideFunc = MultiplyAdd;
                     break;
                 default:
@@ -53,7 +53,7 @@ namespace DivisionBenchmark
         /// <value>
         /// The strategy of a division.
         /// </value>
-        public DivisorStrategy Strategy { get; }
+        public UInt32DivisorStrategy Strategy { get; }
 
         /// <summary>
         /// Gets the number of bits to shift for actual "division".
