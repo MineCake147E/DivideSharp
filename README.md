@@ -199,7 +199,7 @@ public uint Divide(uint value)
 <details>
   <summary>Details</summary>
 
-#### Initialization(`UInt32Divisor UInt32Divisor.ctor(uint)`)
+#### Initialization
 
 ```csharp
 var uInt32Divisor = new UInt32Divisor(19);
