@@ -19,13 +19,13 @@ DivideSharp first computes the magic parameters for division and then converts a
 
 #### **The divisor is a power of two**
 
-When the divisor is a power of two like 0b1000_0000u(=128u), the division can be simplified to a right-shift operation like
+When the divisor is a power of two like 0b1000_0000u(=128u), the division can be simplified to a right-shift operation like:
 
 ```csharp
 static uint D128(uint value) => value >> 7;
 ```
 
-which turns into(The JIT asm code is generated using [SharpLab.io](https://sharplab.io/)) :
+The above code is then compiled as follows(using [SharpLab](https://sharplab.io/)):
 
 ```asm
 D128(UInt32)
@@ -36,12 +36,12 @@ D128(UInt32)
 
 #### **The divisor is not a power of two**
 
-The division of unsigned integers can theoretically be transformed into a set of multiplications and shifts, as shown in the following equation:
-![\lfloor \frac{value}{divisor} \rfloor = \lfloor \frac{value \times \frac{2^n}{divisor}}{2^n}\rfloor](https://latex.codecogs.com/svg.latex?%5Cdpi%7B300%7D%20%5Cfn_jvn%20%5Clfloor%20%5Cfrac%7Bvalue%7D%7Bdivisor%7D%20%5Crfloor%20%3D%20%5Clfloor%20%5Cfrac%7Bvalue%20%5Ctimes%20%5Cfrac%7B2%5En%7D%7Bdivisor%7D%7D%7B2%5En%7D%5Crfloor)
-For example, if the denominator is 239, we have the following formula:
-![magic = \lceil \frac{2^n}{239}\rceil = (2300233531)_{10} = (891AC73B)_{16}](https://latex.codecogs.com/svg.latex?%5Cdpi%7B300%7D%20%5Cfn_jvn%20magic%20%3D%20%5Clceil%20%5Cfrac%7B2%5En%7D%7B239%7D%5Crceil%20%3D%20%282300233531%29_%7B10%7D%20%3D%20%28891AC73B%29_%7B16%7D) (n=39 is chosen so that the magic is optimal for the required precision.)
-![\lfloor \frac{value}{239} \rfloor = \lfloor \frac{value \times 2300233531}{2^{32+7}}\rfloor](https://latex.codecogs.com/svg.latex?%5Cfn_jvn%20%5Clfloor%20%5Cfrac%7Bvalue%7D%7B239%7D%20%5Crfloor%20%3D%20%5Clfloor%20%5Cfrac%7Bvalue%20%5Ctimes%202300233531%7D%7B2%5E%7B32&plus;7%7D%7D%5Crfloor)
-Furthermore, since division by ![2^n](https://latex.codecogs.com/svg.latex?%5Cdpi%7B300%7D%20%5Cfn_jvn%20%5Csmall%202%5En) can be converted to a shift operation, this formula can be rewritten into the following C# code:
+The division of unsigned integers can theoretically be transformed into a set of multiplications and shifts, as shown in the following equation:  
+![\lfloor \frac{value}{divisor} \rfloor = \lfloor \frac{value \times \frac{2^n}{divisor}}{2^n}\rfloor](https://latex.codecogs.com/svg.latex?%5Cdpi%7B300%7D%20%5Cfn_jvn%20%5Clfloor%20%5Cfrac%7Bvalue%7D%7Bdivisor%7D%20%5Crfloor%20%3D%20%5Clfloor%20%5Cfrac%7Bvalue%20%5Ctimes%20%5Cfrac%7B2%5En%7D%7Bdivisor%7D%7D%7B2%5En%7D%5Crfloor)  
+For example, if the denominator is 239, we have the following formula:  
+![magic = \lceil \frac{2^n}{239}\rceil = (2300233531)_{10} = (891AC73B)_{16}](https://latex.codecogs.com/svg.latex?%5Cdpi%7B300%7D%20%5Cfn_jvn%20magic%20%3D%20%5Clceil%20%5Cfrac%7B2%5En%7D%7B239%7D%5Crceil%20%3D%20%282300233531%29_%7B10%7D%20%3D%20%28891AC73B%29_%7B16%7D) (n=39 is chosen so that the magic is optimal for the required precision.)  
+![\lfloor \frac{value}{239} \rfloor = \lfloor \frac{value \times 2300233531}{2^{32+7}}\rfloor](https://latex.codecogs.com/svg.latex?%5Cfn_jvn%20%5Clfloor%20%5Cfrac%7Bvalue%7D%7B239%7D%20%5Crfloor%20%3D%20%5Clfloor%20%5Cfrac%7Bvalue%20%5Ctimes%202300233531%7D%7B2%5E%7B32&plus;7%7D%7D%5Crfloor)  
+Furthermore, since division by ![2^n](https://latex.codecogs.com/svg.latex?%5Cdpi%7B300%7D%20%5Cfn_jvn%20%5Csmall%202%5En) can be converted to a shift operation, this formula can be rewritten into the following C# code:  
 
 ```csharp
 public static uint D239Custom(uint value)
@@ -53,7 +53,7 @@ public static uint D239Custom(uint value)
 }
 ```
 
-And the code is compiled into:
+The above code is then compiled as follows:
 
 ```asm
 D239Custom(UInt32)
@@ -65,35 +65,132 @@ D239Custom(UInt32)
 
 #### **The divisor is not a power-of-two number** complex cases
 
-However, codes like D239Custom may return inaccurate results, depending on the denominator(e.g. 231).
-Therefore, the adjustments are made as shown in the following formula:
-![edx \leftarrow \lfloor \frac{value \times magic}{2^{32}}\rfloor](https://latex.codecogs.com/svg.latex?%5Cdpi%7B300%7D%20%5Cfn_jvn%20edx%20%5Cleftarrow%20%5Clfloor%20%5Cfrac%7Bvalue%20%5Ctimes%20magic%7D%7B2%5E%7B32%7D%7D%5Crfloor) (store the value of ![\lfloor \frac{value \times magic}{2^{32}}\rfloor](https://latex.codecogs.com/svg.latex?\fn_jvn&space;\tiny&space;\lfloor&space;\frac{value&space;\times&space;magic}{2^{32}}\rfloor) into `edx`)
-then calculate
-![\lfloor \frac{value}{divisor} \rfloor = \lfloor \frac{\lfloor edx + \lfloor\frac{value - edx}{2}\rfloor}{2^{n - 32}}\rfloor](https://latex.codecogs.com/svg.latex?%5Cfn_jvn%20%5Clfloor%20%5Cfrac%7Bvalue%7D%7Bdivisor%7D%20%5Crfloor%20%3D%20%5Clfloor%20%5Cfrac%7B%5Clfloor%20edx%20&plus;%20%5Clfloor%5Cfrac%7Bvalue%20-%20edx%7D%7B2%7D%5Crfloor%7D%7B2%5E%7Bn%20-%2032%7D%7D%5Crfloor)
-(The variable "edx" is named after the AMD64 32-bit register edx.)
+However, codes like D239Custom may return inaccurate results, depending on the denominator(e.g. 231).  
+Therefore, the adjustments are made as shown in the following formula:  
+![edx \leftarrow \lfloor \frac{value \times magic}{2^{32}}\rfloor](https://latex.codecogs.com/svg.latex?%5Cdpi%7B300%7D%20%5Cfn_jvn%20edx%20%5Cleftarrow%20%5Clfloor%20%5Cfrac%7Bvalue%20%5Ctimes%20magic%7D%7B2%5E%7B32%7D%7D%5Crfloor) (store the value of ![\lfloor \frac{value \times magic}{2^{32}}\rfloor](https://latex.codecogs.com/svg.latex?\fn_jvn&space;\tiny&space;\lfloor&space;\frac{value&space;\times&space;magic}{2^{32}}\rfloor) into `edx`)  
+then calculate  
+![\lfloor \frac{value}{divisor} \rfloor = \lfloor \frac{\lfloor edx + \lfloor\frac{value - edx}{2}\rfloor}{2^{n - 32}}\rfloor](https://latex.codecogs.com/svg.latex?%5Cfn_jvn%20%5Clfloor%20%5Cfrac%7Bvalue%7D%7Bdivisor%7D%20%5Crfloor%20%3D%20%5Clfloor%20%5Cfrac%7B%5Clfloor%20edx%20&plus;%20%5Clfloor%5Cfrac%7Bvalue%20-%20edx%7D%7B2%7D%5Crfloor%7D%7B2%5E%7Bn%20-%2032%7D%7D%5Crfloor)  
+(The variable "edx" is named after the AMD64 32-bit register edx.)  
 
 <details>
   <summary>Details of adjustment</summary>
 
 ![\begin{align*}
-\lfloor\frac{value - \lfloor \frac{value \times magic}{2^{32}}\rfloor}{2}\rfloor &\approx \lfloor\frac{value - value \times \frac{magic}{2^{32}}}{2}\rfloor \\
- &= \lfloor\frac{value \times \frac{2^{32}}{2^{32}} - value \times \frac{magic}{2^{32}}}{2}\rfloor \\
- &= \lfloor\frac{value \times (\frac{2^{32} - magic}{2^{32}})}{2}\rfloor \\
- &= \lfloor value \times \frac{(\frac{2^{32} - magic}{2^{32}})}{2}\rfloor \\
- &= \lfloor value \times (\frac{1}{2} - \frac{magic}{2^{33}})\rfloor \\
+\lfloor\frac{value - \lfloor \frac{value \times magic}{2^{32}}\rfloor}{2}\rfloor &\approx \lfloor\frac{value - value \times \frac{magic}{2^{32}}}{2}\rfloor \\ 
+ &= \lfloor\frac{value \times \frac{2^{32}}{2^{32}} - value \times \frac{magic}{2^{32}}}{2}\rfloor \\ 
+ &= \lfloor\frac{value \times (\frac{2^{32} - magic}{2^{32}})}{2}\rfloor \\ 
+ &= \lfloor value \times \frac{(\frac{2^{32} - magic}{2^{32}})}{2}\rfloor \\ 
+ &= \lfloor value \times (\frac{1}{2} - \frac{magic}{2^{33}})\rfloor \\ 
 \end{align*}]( https://latex.codecogs.com/svg.latex?%5Cdpi%7B100%7D%20%5Cfn_jvn%20%5Cbegin%7Balign*%7D%20%5Clfloor%5Cfrac%7Bvalue%20-%20%5Clfloor%20%5Cfrac%7Bvalue%20%5Ctimes%20magic%7D%7B2%5E%7B32%7D%7D%5Crfloor%7D%7B2%7D%5Crfloor%20%26%5Capprox%20%5Clfloor%5Cfrac%7Bvalue%20-%20value%20%5Ctimes%20%5Cfrac%7Bmagic%7D%7B2%5E%7B32%7D%7D%7D%7B2%7D%5Crfloor%20%5C%5C%20%26%3D%20%5Clfloor%5Cfrac%7Bvalue%20%5Ctimes%20%5Cfrac%7B2%5E%7B32%7D%7D%7B2%5E%7B32%7D%7D%20-%20value%20%5Ctimes%20%5Cfrac%7Bmagic%7D%7B2%5E%7B32%7D%7D%7D%7B2%7D%5Crfloor%20%5C%5C%20%26%3D%20%5Clfloor%5Cfrac%7Bvalue%20%5Ctimes%20%28%5Cfrac%7B2%5E%7B32%7D%20-%20magic%7D%7B2%5E%7B32%7D%7D%29%7D%7B2%7D%5Crfloor%20%5C%5C%20%26%3D%20%5Clfloor%20value%20%5Ctimes%20%5Cfrac%7B%28%5Cfrac%7B2%5E%7B32%7D%20-%20magic%7D%7B2%5E%7B32%7D%7D%29%7D%7B2%7D%5Crfloor%20%5C%5C%20%26%3D%20%5Clfloor%20value%20%5Ctimes%20%28%5Cfrac%7B1%7D%7B2%7D%20-%20%5Cfrac%7Bmagic%7D%7B2%5E%7B33%7D%7D%29%5Crfloor%20%5C%5C%20%5Cend%7Balign*%7D )  
 ![\begin{align*}
-\lfloor \frac{\lfloor \lfloor \frac{value \times magic}{2^{32}}\rfloor + \lfloor\frac{value - \lfloor \frac{value \times magic}{2^{32}}\rfloor}{2}\rfloor}{2^{n - 32}}\rfloor &\approx \lfloor \frac{ \frac{value \times magic}{2^{32}} + value \times \frac{2^{32} - magic}{2^{33}}}{2^{n - 32}}\rfloor \\
- &= \lfloor \frac{ value \times \frac{magic}{2^{32}} + value \times \frac{2^{32} - magic}{2^{33}}}{2^{n - 32}}\rfloor \\
- &= \lfloor \frac{value \times (\frac{2^{32} - magic + 2magic}{2^{33}})}{2^{n - 32}}\rfloor \\
- &= \lfloor \frac{value \times (\frac{2^{32} + magic}{2^{33}})}{2^{n - 32}}\rfloor \\
- &= \lfloor \frac{value \times (2^{32} + magic)}{2^{n + 1}}\rfloor \\
+\lfloor \frac{\lfloor \lfloor \frac{value \times magic}{2^{32}}\rfloor + \lfloor\frac{value - \lfloor \frac{value \times magic}{2^{32}}\rfloor}{2}\rfloor}{2^{n - 32}}\rfloor &\approx \lfloor \frac{ \frac{value \times magic}{2^{32}} + value \times \frac{2^{32} - magic}{2^{33}}}{2^{n - 32}}\rfloor \\ 
+ &= \lfloor \frac{ value \times \frac{magic}{2^{32}} + value \times \frac{2^{32} - magic}{2^{33}}}{2^{n - 32}}\rfloor \\ 
+ &= \lfloor \frac{value \times (\frac{2^{32} - magic + 2magic}{2^{33}})}{2^{n - 32}}\rfloor \\ 
+ &= \lfloor \frac{value \times (\frac{2^{32} + magic}{2^{33}})}{2^{n - 32}}\rfloor \\ 
+ &= \lfloor \frac{value \times (2^{32} + magic)}{2^{n + 1}}\rfloor \\ 
 \end{align*}]( https://latex.codecogs.com/svg.latex?%5Cfn_jvn%20%5Cbegin%7Balign*%7D%20%5Clfloor%20%5Cfrac%7B%5Clfloor%20%5Clfloor%20%5Cfrac%7Bvalue%20%5Ctimes%20magic%7D%7B2%5E%7B32%7D%7D%5Crfloor%20&plus;%20%5Clfloor%5Cfrac%7Bvalue%20-%20%5Clfloor%20%5Cfrac%7Bvalue%20%5Ctimes%20magic%7D%7B2%5E%7B32%7D%7D%5Crfloor%7D%7B2%7D%5Crfloor%7D%7B2%5E%7Bn%20-%2032%7D%7D%5Crfloor%20%26%5Capprox%20%5Clfloor%20%5Cfrac%7B%20%5Cfrac%7Bvalue%20%5Ctimes%20magic%7D%7B2%5E%7B32%7D%7D%20&plus;%20value%20%5Ctimes%20%5Cfrac%7B2%5E%7B32%7D%20-%20magic%7D%7B2%5E%7B33%7D%7D%7D%7B2%5E%7Bn%20-%2032%7D%7D%5Crfloor%20%5C%5C%20%26%3D%20%5Clfloor%20%5Cfrac%7B%20value%20%5Ctimes%20%5Cfrac%7Bmagic%7D%7B2%5E%7B32%7D%7D%20&plus;%20value%20%5Ctimes%20%5Cfrac%7B2%5E%7B32%7D%20-%20magic%7D%7B2%5E%7B33%7D%7D%7D%7B2%5E%7Bn%20-%2032%7D%7D%5Crfloor%20%5C%5C%20%26%3D%20%5Clfloor%20%5Cfrac%7Bvalue%20%5Ctimes%20%28%5Cfrac%7B2%5E%7B32%7D%20-%20magic%20&plus;%202magic%7D%7B2%5E%7B33%7D%7D%29%7D%7B2%5E%7Bn%20-%2032%7D%7D%5Crfloor%20%5C%5C%20%26%3D%20%5Clfloor%20%5Cfrac%7Bvalue%20%5Ctimes%20%28%5Cfrac%7B2%5E%7B32%7D%20&plus;%20magic%7D%7B2%5E%7B33%7D%7D%29%7D%7B2%5E%7Bn%20-%2032%7D%7D%5Crfloor%20%5C%5C%20%26%3D%20%5Clfloor%20%5Cfrac%7Bvalue%20%5Ctimes%20%282%5E%7B32%7D%20&plus;%20magic%29%7D%7B2%5E%7Bn%20&plus;%201%7D%7D%5Crfloor%20%5C%5C%20%5Cend%7Balign*%7D )  
 Since ![2^{32}](https://latex.codecogs.com/svg.latex?%5Cinline%20%5Cfn_jvn%20%5Csmall%202%5E%7B32%7D) does not fit into the 32-bit unsigned integer variable `magic`, term ![2^{32} + magic](https://latex.codecogs.com/svg.latex?%5Cdpi%7B300%7D%20%5Cfn_jvn%20%5Csmall%202%5E%7B32%7D%20&plus;%20magic) adds ![2^{32}](https://latex.codecogs.com/svg.latex?%5Cinline%20%5Cfn_jvn%20%5Csmall%202%5E%7B32%7D) to the numerator stored in `magic`.  
 So the `magic` is given by the formula below:  
-![magic = \lceil \frac{2^n}{divisor}\rceil - 2^{32}](https://latex.codecogs.com/svg.latex?%5Cfn_jvn%20magic%20%3D%20%5Clceil%20%5Cfrac%7B2%5En%7D%7Bdivisor%7D%5Crceil%20-%202%5E%7B32%7D) (n is chosen so that ![\lceil \frac{2^n}{divisor}\rceil](https://latex.codecogs.com/svg.latex?%5Cinline%20%5Cfn_jvn%20%5Clceil%20%5Cfrac%7B2%5En%7D%7Bdivisor%7D%5Crceil) is the largest value less than ![2^{33}](https://latex.codecogs.com/svg.latex?%5Cinline%20%5Cfn_jvn%20%5Csmall%202%5E%7B33%7D))
+![magic = \lceil \frac{2^n}{divisor}\rceil - 2^{32}](https://latex.codecogs.com/svg.latex?%5Cfn_jvn%20magic%20%3D%20%5Clceil%20%5Cfrac%7B2%5En%7D%7Bdivisor%7D%5Crceil%20-%202%5E%7B32%7D) (n is chosen so that ![\lceil \frac{2^n}{divisor}\rceil](https://latex.codecogs.com/svg.latex?%5Cinline%20%5Cfn_jvn%20%5Clceil%20%5Cfrac%7B2%5En%7D%7Bdivisor%7D%5Crceil) is the largest value less than ![2^{33}](https://latex.codecogs.com/svg.latex?%5Cinline%20%5Cfn_jvn%20%5Csmall%202%5E%7B33%7D))  
 
 </details>
+
+Now, this formula can be rewritten into the following C# code:
+
+```csharp
+public static uint D231Custom(uint value)
+{
+    ulong v = (ulong)value * 0x1bb4a405;
+    v >>= 32;
+    value -= (uint)v;
+    value >>= 1;
+    var q = value + (uint)v;
+    q >>= 7;
+    return q;
+}
+```
+
+The above code is then compiled as follows:
+
+```asm
+D231Custom(UInt32)
+    L0000: mov eax, ecx
+    L0002: imul rax, 0x1bb4a405
+    L0009: shr rax, 0x20
+    L000d: sub ecx, eax
+    L000f: shr ecx, 1
+    L0011: add eax, ecx
+    L0013: shr eax, 7
+    L0016: ret
+```
+
+#### **Corner Cases**
+
+If the denominator is greater than 2147483648(0x8000_0000u), as in 2147483649, the numerator cannot be more than twice its denominator.  
+For this reason, it is more efficient to use the if statement instead of dividing by the method described above.
+In C# it looks like the following:  
+
+```csharp
+//The Unsafe class belongs to System.Runtime.CompilerServices
+public static uint D2147483649(uint value) => value >= 2147483649 ? 1u : 0u;
+public static uint D2147483649Ex(uint value)    //Equivalent to value >= 2147483649 ? 1u : 0u
+{
+    bool f = value >= 2147483649;       //`cmp ecx, 0x80000001` and `setae al`
+    return Unsafe.As<bool, byte>(ref f); //moxzx eax, al
+}
+```
+
+The above code is then compiled as follows:
+
+```asm
+D2147483649(UInt32)     //Ternary operator
+    L0000: cmp ecx, 0x80000001
+    L0006: jae short L000b
+    L0008: xor eax, eax
+    L000a: ret
+    L000b: mov eax, 1
+    L0010: ret
+
+D2147483649Ex(UInt32)   //Unsafe.As<bool, byte>
+    L0000: cmp ecx, 0x80000001
+    L0006: setae al
+    L0009: movzx eax, al
+    L000c: ret
+```
+
+#### **Runtime Optimizations**
+
+The UInt32Divisor generalizes the four cases mentioned above with the following code:
+
+```csharp
+public uint Divide(uint value)
+{
+    if (Strategy == UInt32DivisorStrategy.Branch)   //The denominator is greater than 2147483648
+    {
+        return value >= Divisor ? 1u : 0u;
+    }
+    ulong rax = value;
+    uint eax;
+    ulong multiplier = Multiplier;
+    uint strategy = (uint)Strategy;
+    int shift = Shift;
+    //The register ecx must be carefully handled because first the ecx is `this` and now ecx must be `shift`
+    if ((strategy & 0b10u) > 0) //The denominator is not a power of two
+    {
+        rax *= multiplier;
+        if ((strategy & 0b01u) > 0) //The actual magic needs 33 bits
+        {
+            eax = (uint)(rax >> 32);
+            value -= eax;
+            value >>= 1;
+            eax += value;
+            rax = eax;
+        }
+    }
+    eax = (uint)(rax >> shift); //The right operand of >> must be `cl`(the lower 8 bits of ecx) here.
+    return eax;
+}
+```
 
 ## Usage
 
