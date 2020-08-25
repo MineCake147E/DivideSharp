@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DivideSharp\DivideSharp.csproj" />
+    <ProjectReference Include="..\TestAndBenchmarkUtils\TestAndBenchmarkUtils.csproj" />
   </ItemGroup>
 
 </Project>

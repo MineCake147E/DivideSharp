@@ -1,6 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 using NUnit.Framework;
+
+using TestAndBenchmarkUtils;
 
 namespace DivideSharp.Tests
 {
@@ -9,21 +13,27 @@ namespace DivideSharp.Tests
     {
         #region Test Cases
 
+        private static IEnumerable<uint> Divisors => new uint[]
+        {
+            //Obvious
+            1,
+            //Pre-Defined
+            3,4,5,6,7,8,9,10,11,12,
+            //Shift
+            2,16,
+            19, //MultiplyAdd
+            23  //Multiply
+        };
+
+        private static IEnumerable<TestCaseData> RandomDivisionTestCaseSource => Divisors.Append(0x8000_0001u).Select(a => new TestCaseData(a));
+
+        private const ulong RandomTestCount = 0x1_0000ul;
+
         private static IEnumerable<TestCaseData> DivisionTestCaseSource
         {
             get
             {
-                var divisors = new uint[]
-                {
-                    //Obvious
-                    1,
-                    //Pre-Defined
-                    3,4,5,6,7,8,9,10,11,12,
-                    //Shift
-                    2,16,
-                    19, //MultiplyAdd
-                    23  //Multiply
-                };
+                var divisors = Divisors;
                 //Generate Test Data's
                 foreach (var item in divisors)
                 {
@@ -93,6 +103,74 @@ namespace DivideSharp.Tests
                 Assert.AreEqual(testDividend % divisor, remainder);
                 Assert.AreEqual(testDividend / divisor * divisor, rounded);
             });
+        }
+
+        [TestCaseSource(nameof(RandomDivisionTestCaseSource))]
+        public void CorrectlyDividesRandomNumerators(uint divisor)
+        {
+            var uInt32Divisor = new UInt32Divisor(divisor);
+            var rng = new PcgRandom();
+            for (ulong i = 0; i < RandomTestCount; i++)
+            {
+                var testDividend = rng.Next();
+                var quotient = testDividend / uInt32Divisor;
+                Assert.AreEqual(testDividend / divisor, quotient, $"Trying to test {testDividend} / {divisor}");
+            }
+        }
+
+        [TestCaseSource(nameof(RandomDivisionTestCaseSource))]
+        public void CalculatesModulusCorrectlyRandomNumerators(uint divisor)
+        {
+            var uInt32Divisor = new UInt32Divisor(divisor);
+            var rng = new PcgRandom();
+
+            for (ulong i = 0; i < RandomTestCount; i++)
+            {
+                var testDividend = rng.Next();
+                var remainder = testDividend % uInt32Divisor;
+                Assert.AreEqual(testDividend % divisor, remainder, $"Trying to test {testDividend} % {divisor}");
+            }
+        }
+
+        [TestCaseSource(nameof(RandomDivisionTestCaseSource))]
+        public void DivRemReturnsCorrectlyRandomNumerators(uint divisor)
+        {
+            var uInt32Divisor = new UInt32Divisor(divisor);
+            var rng = new PcgRandom();
+            for (ulong i = 0; i < RandomTestCount; i++)
+            {
+                var testDividend = rng.Next();
+                var remainder = uInt32Divisor.DivRem(testDividend, out var quotient);
+                Assert.AreEqual(testDividend % divisor, remainder, $"Trying to test {testDividend} % {divisor}");
+                Assert.AreEqual(testDividend / divisor, quotient, $"Trying to test {testDividend} / {divisor}");
+            }
+        }
+
+        [TestCaseSource(nameof(RandomDivisionTestCaseSource))]
+        public void CalculatesFloorCorrectlyRandomNumerators(uint divisor)
+        {
+            var uInt32Divisor = new UInt32Divisor(divisor);
+            var rng = new PcgRandom();
+            for (ulong i = 0; i < RandomTestCount; i++)
+            {
+                var testDividend = rng.Next();
+                var rounded = uInt32Divisor.Floor(testDividend);
+                Assert.AreEqual(testDividend / divisor * divisor, rounded, $"Trying to test {testDividend} / {divisor} * {divisor}");
+            }
+        }
+
+        [TestCaseSource(nameof(RandomDivisionTestCaseSource))]
+        public void CalculatesFloorRemCorrectlyRandomNumerators(uint divisor)
+        {
+            var uInt32Divisor = new UInt32Divisor(divisor);
+            var rng = new PcgRandom();
+            for (ulong i = 0; i < RandomTestCount; i++)
+            {
+                var testDividend = rng.Next();
+                var remainder = uInt32Divisor.FloorRem(testDividend, out var rounded);
+                Assert.AreEqual(testDividend % divisor, remainder, $"Trying to test {testDividend} % {divisor}");
+                Assert.AreEqual(testDividend / divisor * divisor, rounded, $"Trying to test {testDividend} / {divisor} * {divisor}");
+            }
         }
     }
 }
