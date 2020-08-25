@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System.Text;
 
-namespace DivideSharp
+using DivideSharp;
+
+namespace DivisionBenchmark.OldDivisors
 {
     /// <summary>
     /// Divides an <see cref="uint"/> value RAPIDLY.
@@ -18,7 +21,7 @@ namespace DivideSharp
             new UInt32Divisor(4, 1, UInt32DivisorStrategy.Shift, 1),
             new UInt32Divisor(5, 0xcccccccdu, UInt32DivisorStrategy.MultiplyShift, 32 + 2),
             new UInt32Divisor(6, 0xaaaaaaabu, UInt32DivisorStrategy.MultiplyShift, 32 + 2),
-            new UInt32Divisor(7, 0x24924925u, UInt32DivisorStrategy.MultiplyAddShift, 33 + 2),
+            new UInt32Divisor(7, 0x24924925u, UInt32DivisorStrategy.MultiplyAddShift, 2),
             new UInt32Divisor(8, 1, UInt32DivisorStrategy.Shift, 3),
             new UInt32Divisor(9, 0x38e38e39u, UInt32DivisorStrategy.MultiplyShift, 32 + 1),
             new UInt32Divisor(10, 0xcccccccdu, UInt32DivisorStrategy.MultiplyShift, 32 + 3),
@@ -113,7 +116,7 @@ namespace DivideSharp
 
                 delta = divisor - 1 - r2;
             } while ((p < (Bits * 2)) && ((q1 < delta) || ((q1 == delta) && (r1 == 0))));
-            return (q2 + 1, strategy, (byte)(p));     // resulting magic number
+            return (q2 + 1, strategy, (byte)(strategy == UInt32DivisorStrategy.MultiplyAddShift ? p - Bits - 1 : p));     // resulting magic number
         }
 
         #endregion Static members
@@ -216,21 +219,26 @@ namespace DivideSharp
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Divide(uint value)
         {
-            uint strategy = (uint)Strategy;
-            uint divisor = Divisor;
-            if (strategy == (uint)UInt32DivisorStrategy.Branch)
+            if (Strategy == UInt32DivisorStrategy.Branch)
             {
-                bool v = value >= divisor;
-                return Unsafe.As<bool, byte>(ref v);
+                return value >= Divisor ? 1u : 0u;
             }
             ulong rax = value;
             uint eax;
             ulong multiplier = Multiplier;
+            uint strategy = (uint)Strategy;
             int shift = Shift;
             if ((strategy & 0b10u) > 0)
             {
-                multiplier |= (strategy & 0b01ul) << 32;
                 rax *= multiplier;
+                if ((strategy & 0b01u) > 0)
+                {
+                    eax = (uint)(rax >> 32);
+                    value -= eax;
+                    value >>= 1;
+                    eax += value;
+                    rax = eax;
+                }
             }
             eax = (uint)(rax >> shift);
             return eax;
@@ -256,8 +264,15 @@ namespace DivideSharp
             {
                 if ((strategy & 0b10u) > 0)
                 {
-                    multiplier |= (strategy & 0b01ul) << 32;
                     rax *= multiplier;
+                    if ((strategy & 0b01u) > 0)
+                    {
+                        eax = (uint)(rax >> 32);
+                        r9d -= eax;
+                        r9d >>= 1;
+                        eax += r9d;
+                        rax = eax;
+                    }
                     eax = (uint)(rax >> shift);
                     quotient = eax;
                     eax *= divisor;
@@ -273,10 +288,16 @@ namespace DivideSharp
             }
             else
             {
-                bool v = value >= Divisor;
-                byte v1 = Unsafe.As<bool, byte>(ref v);
-                quotient = v1;
-                return value - (divisor & (uint)-Unsafe.As<bool, sbyte>(ref v));
+                if (value >= divisor)
+                {
+                    quotient = 1u;
+                    return value - divisor;
+                }
+                else
+                {
+                    quotient = 0;
+                    return value;
+                }
             }
         }
 
@@ -288,23 +309,29 @@ namespace DivideSharp
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Floor(uint value)
         {
-            uint divisor = Divisor;
-            uint strategy = (uint)Strategy;
 #pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
-            if (strategy == (uint)UInt32DivisorStrategy.Branch)
+            if ((Strategy & UInt32DivisorStrategy.Branch) > 0)
 #pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations
             {
-                bool v = value >= divisor;
-                return divisor & (uint)-Unsafe.As<bool, sbyte>(ref v);
+                return value >= Divisor ? Divisor : 0u;
             }
             ulong rax = value;
             uint eax;
+            uint divisor = Divisor;
             ulong multiplier = Multiplier;
+            uint strategy = (uint)Strategy;
             int shift = Shift;
             if ((strategy & 0b10u) > 0)
             {
-                multiplier |= (strategy & 0b01ul) << 32;
                 rax *= multiplier;
+                if ((strategy & 0b01u) > 0)
+                {
+                    eax = (uint)(rax >> 32);
+                    value -= eax;
+                    value >>= 1;
+                    eax += value;
+                    rax = eax;
+                }
                 eax = (uint)(rax >> shift);
                 return eax * divisor;
             }
@@ -333,8 +360,16 @@ namespace DivideSharp
             {
                 if ((strategy & 0b10u) > 0)
                 {
-                    multiplier |= (strategy & 0b01ul) << 32;
                     rax *= multiplier;
+                    if ((strategy & 0b01u) > 0)
+                    {
+                        uint r9d = value;
+                        eax = (uint)(rax >> 32);
+                        r9d -= eax;
+                        r9d >>= 1;
+                        eax += r9d;
+                        rax = eax;
+                    }
                     eax = (uint)(rax >> shift);
                     eax *= divisor;
                     return value - eax;
@@ -346,8 +381,14 @@ namespace DivideSharp
             }
             else
             {
-                bool v = value >= divisor;
-                return value - (divisor & (uint)-Unsafe.As<bool, sbyte>(ref v));
+                if (value >= divisor)
+                {
+                    return value - divisor;
+                }
+                else
+                {
+                    return value;
+                }
             }
         }
 
@@ -370,8 +411,16 @@ namespace DivideSharp
             {
                 if ((strategy & 0b10u) > 0)
                 {
-                    multiplier |= (strategy & 0b01ul) << 32;
                     rax *= multiplier;
+                    if ((strategy & 0b01u) > 0)
+                    {
+                        uint ecx = value;
+                        eax = (uint)(rax >> 32);
+                        ecx -= eax;
+                        ecx >>= 1;
+                        eax += ecx;
+                        rax = eax;
+                    }
                     eax = (uint)(rax >> shift);
                     eax *= divisor;
                     largestMultipleOfDivisor = eax;
@@ -386,7 +435,7 @@ namespace DivideSharp
             }
             else
             {
-                largestMultipleOfDivisor = value >= divisor ? divisor : 0u;
+                largestMultipleOfDivisor = value >= Divisor ? Divisor : 0u;
                 return value - largestMultipleOfDivisor;
             }
         }
