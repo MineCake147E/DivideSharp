@@ -66,7 +66,7 @@ D239Custom(UInt32)
 #### **The divisor is not a power-of-two number** complex cases
 
 However, codes like D239Custom may return inaccurate results depending on the denominator (e.g. 231).  
-RyuJIT uses the following expression instead.  
+RyuJIT and DivideSharp uses the following expression instead.  
 ![edx \leftarrow \lfloor \frac{value \times magic}{2^{32}}\rfloor](https://latex.codecogs.com/svg.latex?%5Cdpi%7B300%7D%20%5Cfn_jvn%20edx%20%5Cleftarrow%20%5Clfloor%20%5Cfrac%7Bvalue%20%5Ctimes%20magic%7D%7B2%5E%7B32%7D%7D%5Crfloor) (store the value of ![\lfloor \frac{value \times magic}{2^{32}}\rfloor](https://latex.codecogs.com/svg.latex?\fn_jvn&space;\tiny&space;\lfloor&space;\frac{value&space;\times&space;magic}{2^{32}}\rfloor) into `edx`)  
 then calculate  
 ![\lfloor \frac{value}{divisor} \rfloor = \lfloor \frac{\lfloor edx + \lfloor\frac{value - edx}{2}\rfloor}{2^{n - 32}}\rfloor](https://latex.codecogs.com/svg.latex?%5Cfn_jvn%20%5Clfloor%20%5Cfrac%7Bvalue%7D%7Bdivisor%7D%20%5Crfloor%20%3D%20%5Clfloor%20%5Cfrac%7B%5Clfloor%20edx%20&plus;%20%5Clfloor%5Cfrac%7Bvalue%20-%20edx%7D%7B2%7D%5Crfloor%7D%7B2%5E%7Bn%20-%2032%7D%7D%5Crfloor)  
@@ -95,9 +95,13 @@ Now, when the divisor is 231, we can rewrite this expression in the following C#
 ```csharp
 public static uint D231Custom(uint value)
 {
-    ulong v = value * 0x11bb4a405u;
-    v >>= 40;
-    return (uint)v;
+    ulong v = (ulong)value * 0x1bb4a405;
+    v >>= 32;
+    value -= (uint)v;
+    value >>= 1;
+    var q = value + (uint)v;
+    q >>= 7;
+    return q;
 }
 ```
 
@@ -106,10 +110,13 @@ The above code is then compiled as follows:
 ```asm
 D231Custom(UInt32)
     L0000: mov eax, ecx
-    L0002: mov rdx, 0x11bb4a405
-    L000c: imul rax, rdx
-    L0010: shr rax, 0x28
-    L0014: ret
+    L0002: imul rax, 0x1bb4a405
+    L0009: shr rax, 0x20
+    L000d: sub ecx, eax
+    L000f: shr ecx, 1
+    L0011: add eax, ecx
+    L0013: shr eax, 7
+    L0016: ret
 ```
 
 #### **Corner Cases**
