@@ -32,7 +32,7 @@ namespace DivideSharp
         T Modulo(T value);
 
         /// <summary>
-        /// Calculates the quotient of two 32-bit signed integers (<paramref name="value"/> and <see cref="Divisor"/>) and the remainder.
+        /// Calculates the quotient of two n-bit (un)signed integers (<paramref name="value"/> and <see cref="Divisor"/>) and the remainder.
         /// </summary>
         /// <param name="value">The dividend.</param>
         /// <param name="quotient">The quotient of the specified numbers.</param>

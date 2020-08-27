@@ -13,7 +13,7 @@ namespace DivideSharp
     {
         #region Static Members
 
-        private static ReadOnlySpan<Int32Divisor> PositiveDivisors => unchecked(new Int32Divisor[]
+        private static Int32Divisor[] PositiveDivisors { get; } = unchecked(new Int32Divisor[]
         {
             new Int32Divisor(3, 0x55555556, Int32DivisorStrategy.MultiplyShift, 0),
             new Int32Divisor(4, 1, Int32DivisorStrategy.PowerOfTwoPositive, 2),
@@ -27,7 +27,7 @@ namespace DivideSharp
             new Int32Divisor(12, 0x2aaaaaab, Int32DivisorStrategy.MultiplyShift, 1),
         });
 
-        private static ReadOnlySpan<Int32Divisor> NegativeDivisors => unchecked(new Int32Divisor[]
+        private static Int32Divisor[] NegativeDivisors { get; } = unchecked(new Int32Divisor[]
         {
             new Int32Divisor(-3, 0x55555555, Int32DivisorStrategy.MultiplySubtractShift, 1),
             new Int32Divisor(-4, 1, Int32DivisorStrategy.PowerOfTwoNegative, 2),
@@ -103,13 +103,13 @@ namespace DivideSharp
             int resultMagic;
 
             absDivisor = Utils.Abs(divisor);
-            t = TwoNMinus1 + ((uint)(divisor) >> BitsMinus1);
-            absNc = t - 1 - (t % absDivisor); // absolute value of nc
+            t = TwoNMinus1 + ((uint)divisor >> BitsMinus1);
+            absNc = t - 1 - t % absDivisor; // absolute value of nc
             p = BitsMinus1; // initialize p
             q1 = TwoNMinus1 / absNc; // initialize q1 = 2^p / abs(nc)
-            r1 = TwoNMinus1 - (q1 * absNc); // initialize r1 = rem(2^p, abs(nc))
+            r1 = TwoNMinus1 - q1 * absNc; // initialize r1 = rem(2^p, abs(nc))
             q2 = TwoNMinus1 / absDivisor; // initialize q1 = 2^p / abs(divisor)
-            r2 = TwoNMinus1 - (q2 * absDivisor); // initialize r1 = rem(2^p, abs(divisor))
+            r2 = TwoNMinus1 - q2 * absDivisor; // initialize r1 = rem(2^p, abs(divisor))
 
             do
             {
@@ -133,7 +133,7 @@ namespace DivideSharp
                 }
 
                 delta = absDivisor - r2;
-            } while (q1 < delta || (q1 == delta && r1 == 0));
+            } while (q1 < delta || q1 == delta && r1 == 0);
 
             resultMagic = (int)(q2 + 1); // resulting magic number
             if (divisor < 0)

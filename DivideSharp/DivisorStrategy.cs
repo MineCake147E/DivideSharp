@@ -7,7 +7,7 @@ namespace DivideSharp
     /// <summary>
     /// Represents a strategy of division for <see cref="UInt32Divisor"/>.
     /// </summary>
-    public enum UInt32DivisorStrategy : byte
+    public enum UnsignedIntegerDivisorStrategy : byte
     {
         /// <summary>
         /// The strategy for dividing by 1.

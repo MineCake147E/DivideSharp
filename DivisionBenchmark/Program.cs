@@ -8,7 +8,7 @@ namespace DivisionBenchmark
     {
         private static void Main(string[] args)
         {
-            BenchmarkRunner.Run<UInt32DivisionBenchmarks>();
+            BenchmarkRunner.Run<UInt64DivisionBenchmarks>();
         }
     }
 }

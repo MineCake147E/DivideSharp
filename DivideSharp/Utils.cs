@@ -177,6 +177,14 @@ namespace DivideSharp
         }
 
         /// <summary>
+        /// Counts the consecutive zero bits on the right.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountConsecutiveZeros(ulong value) => (uint)value > 0 ? CountConsecutiveZeros((uint)value) : 32 + CountConsecutiveZeros((uint)(value >> 32));
+
+        /// <summary>
         /// Multiplies the specified <paramref name="x"/> and <paramref name="y"/> and returns the high part of whole 128bit result.
         /// </summary>
         /// <param name="x">The x.</param>
@@ -193,6 +201,53 @@ namespace DivideSharp
             s >>= 32;
             s += xhi * yhi;
             return s;
+        }
+
+        /// <summary>
+        /// Multiplies the specified <paramref name="x"/> and <paramref name="y"/> and returns the high part of whole 128bit result.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong MultiplyHigh(ulong x, ulong y)
+        {
+            //Copied from CoreCLR, and modified by MineCake1.4.7
+
+            #region License Notice
+
+            /*
+             The MIT License (MIT)
+            Copyright (c) .NET Foundation and Contributors
+            All rights reserved.
+            Permission is hereby granted, free of charge, to any person obtaining a copy
+            of this software and associated documentation files (the "Software"), to deal
+            in the Software without restriction, including without limitation the rights
+            to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+            copies of the Software, and to permit persons to whom the Software is
+            furnished to do so, subject to the following conditions:
+            The above copyright notice and this permission notice shall be included in all
+            copies or substantial portions of the Software.
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+            SOFTWARE.
+             */
+
+            #endregion License Notice
+
+            ulong xl = (uint)x;
+            ulong yl = (uint)y;
+            ulong xh = x >> 32;
+            ulong yh = y >> 32;
+            ulong mull = xl * yl;
+            ulong t = xh * yl + (mull >> 32);
+            ulong tl = (uint)t;
+            tl += xl * yh;
+            return xh * yh + (t >> 32) + (tl >> 32);
         }
 
         /// <summary>

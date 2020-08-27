@@ -17,19 +17,19 @@ namespace DivisionBenchmark.OldDivisors
 
         private static ReadOnlySpan<UInt32Divisor> Divisors => new UInt32Divisor[]
         {
-            new UInt32Divisor(3, 0xaaaaaaabu, UInt32DivisorStrategy.MultiplyShift, 32 + 1),
-            new UInt32Divisor(4, 1, UInt32DivisorStrategy.Shift, 1),
-            new UInt32Divisor(5, 0xcccccccdu, UInt32DivisorStrategy.MultiplyShift, 32 + 2),
-            new UInt32Divisor(6, 0xaaaaaaabu, UInt32DivisorStrategy.MultiplyShift, 32 + 2),
-            new UInt32Divisor(7, 0x24924925u, UInt32DivisorStrategy.MultiplyAddShift, 2),
-            new UInt32Divisor(8, 1, UInt32DivisorStrategy.Shift, 3),
-            new UInt32Divisor(9, 0x38e38e39u, UInt32DivisorStrategy.MultiplyShift, 32 + 1),
-            new UInt32Divisor(10, 0xcccccccdu, UInt32DivisorStrategy.MultiplyShift, 32 + 3),
-            new UInt32Divisor(11, 0xba2e8ba3u, UInt32DivisorStrategy.MultiplyShift, 32 + 3),
-            new UInt32Divisor(12, 0xaaaaaaabu, UInt32DivisorStrategy.MultiplyShift, 32 + 3),
+            new UInt32Divisor(3, 0xaaaaaaabu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 1),
+            new UInt32Divisor(4, 1, UnsignedIntegerDivisorStrategy.Shift, 1),
+            new UInt32Divisor(5, 0xcccccccdu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 2),
+            new UInt32Divisor(6, 0xaaaaaaabu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 2),
+            new UInt32Divisor(7, 0x24924925u, UnsignedIntegerDivisorStrategy.MultiplyAddShift, 2),
+            new UInt32Divisor(8, 1, UnsignedIntegerDivisorStrategy.Shift, 3),
+            new UInt32Divisor(9, 0x38e38e39u, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 1),
+            new UInt32Divisor(10, 0xcccccccdu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 3),
+            new UInt32Divisor(11, 0xba2e8ba3u, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 3),
+            new UInt32Divisor(12, 0xaaaaaaabu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 3),
         };
 
-        private static (uint multiplier, UInt32DivisorStrategy strategy, byte shift) GetMagic(uint divisor)
+        private static (uint multiplier, UnsignedIntegerDivisorStrategy strategy, byte shift) GetMagic(uint divisor)
         {
             //Copied from CoreCLR, and modified by MineCake1.4.7
 
@@ -68,7 +68,7 @@ namespace DivisionBenchmark.OldDivisors
             const int BitsMinus1 = Bits - 1;
             const uint TwoNMinus1 = 1u << BitsMinus1;
 
-            var strategy = UInt32DivisorStrategy.MultiplyShift;
+            var strategy = UnsignedIntegerDivisorStrategy.MultiplyShift;
             uint nc = (uint)(-1 - (-divisor % divisor));
 
             int p = BitsMinus1;
@@ -97,7 +97,7 @@ namespace DivisionBenchmark.OldDivisors
                 {
                     if (q2 >= (TwoNMinus1 - 1))
                     {
-                        strategy = UInt32DivisorStrategy.MultiplyAddShift;
+                        strategy = UnsignedIntegerDivisorStrategy.MultiplyAddShift;
                     }
 
                     q2 = (2 * q2) + 1;
@@ -107,7 +107,7 @@ namespace DivisionBenchmark.OldDivisors
                 {
                     if (q2 >= TwoNMinus1)
                     {
-                        strategy = UInt32DivisorStrategy.MultiplyAddShift;
+                        strategy = UnsignedIntegerDivisorStrategy.MultiplyAddShift;
                     }
 
                     q2 = 2 * q2;
@@ -116,7 +116,7 @@ namespace DivisionBenchmark.OldDivisors
 
                 delta = divisor - 1 - r2;
             } while ((p < (Bits * 2)) && ((q1 < delta) || ((q1 == delta) && (r1 == 0))));
-            return (q2 + 1, strategy, (byte)(strategy == UInt32DivisorStrategy.MultiplyAddShift ? p - Bits - 1 : p));     // resulting magic number
+            return (q2 + 1, strategy, (byte)(strategy == UnsignedIntegerDivisorStrategy.MultiplyAddShift ? p - Bits - 1 : p));     // resulting magic number
         }
 
         #endregion Static members
@@ -145,7 +145,7 @@ namespace DivisionBenchmark.OldDivisors
         /// <value>
         /// The strategy of a division.
         /// </value>
-        public UInt32DivisorStrategy Strategy { get; }
+        public UnsignedIntegerDivisorStrategy Strategy { get; }
 
         /// <summary>
         /// Gets the number of bits to shift for actual "division".
@@ -171,19 +171,19 @@ namespace DivisionBenchmark.OldDivisors
             if (divisor == 1)
             {
                 Multiplier = 1;
-                Strategy = UInt32DivisorStrategy.None;
+                Strategy = UnsignedIntegerDivisorStrategy.None;
                 Shift = 0;
             }
             else if (divisor > int.MaxValue)
             {
                 Multiplier = 1;
-                Strategy = UInt32DivisorStrategy.Branch;
+                Strategy = UnsignedIntegerDivisorStrategy.Branch;
                 Shift = 0;
             }
             else if (divisor != 0 && (divisor & (divisor - 1)) == 0)
             {
                 Multiplier = 1;
-                Strategy = UInt32DivisorStrategy.Shift;
+                Strategy = UnsignedIntegerDivisorStrategy.Shift;
                 Shift = (byte)Utils.CountConsecutiveZeros(divisor);
             }
             else
@@ -199,7 +199,7 @@ namespace DivisionBenchmark.OldDivisors
         /// <param name="multiplier">The multiplier.</param>
         /// <param name="strategy">The strategy.</param>
         /// <param name="shift">The shift.</param>
-        private UInt32Divisor(uint divisor, uint multiplier, UInt32DivisorStrategy strategy, byte shift)
+        private UInt32Divisor(uint divisor, uint multiplier, UnsignedIntegerDivisorStrategy strategy, byte shift)
         {
             Divisor = divisor;
             Multiplier = multiplier;
@@ -219,7 +219,7 @@ namespace DivisionBenchmark.OldDivisors
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Divide(uint value)
         {
-            if (Strategy == UInt32DivisorStrategy.Branch)
+            if (Strategy == UnsignedIntegerDivisorStrategy.Branch)
             {
                 return value >= Divisor ? 1u : 0u;
             }
@@ -310,7 +310,7 @@ namespace DivisionBenchmark.OldDivisors
         public uint Floor(uint value)
         {
 #pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
-            if ((Strategy & UInt32DivisorStrategy.Branch) > 0)
+            if ((Strategy & UnsignedIntegerDivisorStrategy.Branch) > 0)
 #pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations
             {
                 return value >= Divisor ? Divisor : 0u;

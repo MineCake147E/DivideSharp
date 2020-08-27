@@ -38,6 +38,9 @@ namespace DivisionBenchmark
         [MethodImpl(MethodImplOptions.NoInlining)]
         public uint ValueToBeDivided() => rng.Next();
 
+        [Benchmark]
+        public uint EchoValue() => ValueToBeDivided();
+
         /// <summary>
         /// The New Divisor
         /// </summary>
