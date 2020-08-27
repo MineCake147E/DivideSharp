@@ -173,8 +173,15 @@ public uint Divide(uint value)
     int shift = Shift;
     if ((strategy & 0b10u) > 0)
     {
-        multiplier |= (strategy & 0b01ul) << 32;
         rax *= multiplier;
+        if ((strategy & 0b01u) > 0)
+        {
+            eax = (uint)(rax >> 32);
+            value -= eax;
+            value >>= 1;
+            eax += value;
+            rax = eax;
+        }
     }
     eax = (uint)(rax >> shift);
     return eax;
