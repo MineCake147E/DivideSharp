@@ -38,7 +38,7 @@ namespace DivideSharp
     /// <summary>
     /// Represents a strategy of division for <see cref="Int32Divisor"/>.
     /// </summary>
-    public enum Int32DivisorStrategy : byte
+    public enum SignedDivisorStrategy : byte
     {
         /// <summary>
         /// The strategy for dividing by 1.

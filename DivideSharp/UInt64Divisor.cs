@@ -215,7 +215,7 @@ namespace DivideSharp
                 return Unsafe.As<bool, byte>(ref v);
             }
             ulong rax = value;
-            ulong r8d = value;
+            ulong r8 = value;
             ulong multiplier = Multiplier;
             int shift = Shift;
             if ((strategy & 0b10u) > 0)
@@ -223,9 +223,9 @@ namespace DivideSharp
                 rax = Utils.MultiplyHigh(rax, multiplier);
                 if ((strategy & 0b01u) > 0)
                 {
-                    r8d -= rax;
-                    r8d >>= 1;
-                    rax += r8d;
+                    r8 -= rax;
+                    r8 >>= 1;
+                    rax += r8;
                 }
             }
             rax >>= shift;
@@ -242,8 +242,8 @@ namespace DivideSharp
         public ulong DivRem(ulong value, out ulong quotient)
         {
             ulong rax = value;
-            ulong r8d;
-            ulong r9d = value;
+            ulong r8;
+            ulong r9 = value;
             ulong multiplier = Multiplier;
             uint strategy = (uint)Strategy;
             ulong divisor = Divisor;
@@ -255,22 +255,22 @@ namespace DivideSharp
                     rax = Utils.MultiplyHigh(rax, multiplier);
                     if ((strategy & 0b01u) > 0)
                     {
-                        r8d = value;
-                        r8d -= rax;
-                        r8d >>= 1;
-                        rax += r8d;
+                        r8 = value;
+                        r8 -= rax;
+                        r8 >>= 1;
+                        rax += r8;
                     }
-                    r8d = rax >> shift;
-                    quotient = r8d;
-                    r8d *= divisor;
-                    return value - r8d;
+                    r8 = rax >> shift;
+                    quotient = r8;
+                    r8 *= divisor;
+                    return value - r8;
                 }
                 else
                 {
-                    r9d >>= shift;
-                    quotient = r9d;
-                    r9d <<= shift;
-                    return value ^ r9d;
+                    r9 >>= shift;
+                    quotient = r9;
+                    r9 <<= shift;
+                    return value ^ r9;
                 }
             }
             else
@@ -300,26 +300,26 @@ namespace DivideSharp
                 return divisor & (ulong)-Unsafe.As<bool, sbyte>(ref v);
             }
             ulong rax = value;
-            ulong r8d;
+            ulong r8;
             ulong multiplier = Multiplier;
             int shift = Shift;
             if ((strategy & 0b10u) == 0)
             {
-                r8d = ~0ul << shift;
-                return rax & r8d;
+                r8 = ~0ul << shift;
+                return rax & r8;
             }
             else
             {
                 rax = Utils.MultiplyHigh(rax, multiplier);
                 if ((strategy & 0b01u) > 0)
                 {
-                    r8d = value;
-                    r8d -= rax;
-                    r8d >>= 1;
-                    rax += r8d;
+                    r8 = value;
+                    r8 -= rax;
+                    r8 >>= 1;
+                    rax += r8;
                 }
-                r8d = rax >> shift;
-                return r8d * divisor;
+                r8 = rax >> shift;
+                return r8 * divisor;
             }
         }
 
@@ -333,7 +333,7 @@ namespace DivideSharp
         public ulong FloorRem(ulong value, out ulong largestMultipleOfDivisor)
         {
             ulong rax = value;
-            ulong r8d;
+            ulong r8;
             ulong multiplier = Multiplier;
             uint strategy = (uint)Strategy;
             ulong divisor = Divisor;
@@ -345,29 +345,29 @@ namespace DivideSharp
                     rax = Utils.MultiplyHigh(rax, multiplier);
                     if ((strategy & 0b01u) > 0)
                     {
-                        r8d = value;
-                        r8d -= rax;
-                        r8d >>= 1;
-                        rax += r8d;
+                        r8 = value;
+                        r8 -= rax;
+                        r8 >>= 1;
+                        rax += r8;
                     }
-                    r8d = rax >> shift;
-                    r8d *= divisor;
-                    largestMultipleOfDivisor = r8d;
-                    return value - r8d;
+                    r8 = rax >> shift;
+                    r8 *= divisor;
+                    largestMultipleOfDivisor = r8;
+                    return value - r8;
                 }
                 else
                 {
-                    var r9d = ~0ul << shift;
-                    largestMultipleOfDivisor = value & r9d;
-                    return value & ~r9d;
+                    var r9 = ~0ul << shift;
+                    largestMultipleOfDivisor = value & r9;
+                    return value & ~r9;
                 }
             }
             else
             {
                 bool v = value >= divisor;
-                r8d = (divisor & (ulong)-Unsafe.As<bool, sbyte>(ref v));
-                largestMultipleOfDivisor = r8d;
-                return value - r8d;
+                r8 = (divisor & (ulong)-Unsafe.As<bool, sbyte>(ref v));
+                largestMultipleOfDivisor = r8;
+                return value - r8;
             }
         }
 
@@ -381,7 +381,7 @@ namespace DivideSharp
         public ulong Modulo(ulong value)
         {
             ulong rax = value;
-            ulong r8d = value;
+            ulong r8 = value;
             ulong multiplier = Multiplier;
             uint strategy = (uint)Strategy;
             ulong divisor = Divisor;
@@ -393,13 +393,13 @@ namespace DivideSharp
                     rax = Utils.MultiplyHigh(rax, multiplier);
                     if ((strategy & 0b01u) > 0)
                     {
-                        r8d -= rax;
-                        r8d >>= 1;
-                        rax += r8d;
+                        r8 -= rax;
+                        r8 >>= 1;
+                        rax += r8;
                     }
-                    r8d = rax >> shift;
-                    r8d *= divisor;
-                    return value - r8d;
+                    r8 = rax >> shift;
+                    r8 *= divisor;
+                    return value - r8;
                 }
                 else
                 {

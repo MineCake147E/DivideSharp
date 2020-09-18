@@ -190,17 +190,26 @@ namespace DivideSharp
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long MultiplyHigh(long x, long y)
         {
-            ulong u = (uint)x * (ulong)(uint)y;
-            long s = (long)(u >> 32);
-            long xhi = x >> 32;
-            long yhi = y >> 32;
-            s += xhi * (uint)y;
-            s += yhi * (uint)x;
-            s >>= 32;
-            s += xhi * yhi;
-            return s;
+            unchecked
+            {
+                ulong xl = (uint)x;
+                ulong yl = (uint)y;
+                long xh = x >> 32;
+                long yh = y >> 32;
+                ulong u = xl * yl;
+                long s = (long)(u >> 32);
+                long t1 = xh * (long)yl;
+                long t2 = yh * (long)xl;
+                s += (uint)t1;
+                s += (uint)t2;
+                s >>= 32;
+                s += (t1 >> 32) + (t2 >> 32);
+                s += xh * yh;
+                return s;
+            }
         }
 
         /// <summary>
@@ -255,10 +264,32 @@ namespace DivideSharp
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns></returns>
+        public static ushort Abs(short value)
+        {
+            var q = value >> 15;
+            return (ushort)((value + q) ^ q);
+        }
+
+        /// <summary>
+        /// Returns the absolute value of the specified <paramref name="value"/>.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
         public static uint Abs(int value)
         {
             var q = value >> 31;
             return (uint)((value + q) ^ q);
+        }
+
+        /// <summary>
+        /// Returns the absolute value of the specified <paramref name="value"/>.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        public static ulong Abs(long value)
+        {
+            var q = value >> 63;
+            return (ulong)((value + q) ^ q);
         }
     }
 }

@@ -6,42 +6,42 @@ using System.Text;
 namespace DivideSharp
 {
     /// <summary>
-    /// Divides an <see cref="int"/> value RAPIDLY.
+    /// Divides an <see cref="long"/> value RAPIDLY.
     /// </summary>
     /// <seealso cref="IDivisor{T}" />
-    public readonly struct Int32Divisor : ISignedDivisor<int>, IEquatable<Int32Divisor>
+    public readonly struct Int64Divisor : ISignedDivisor<long>, IEquatable<Int64Divisor>
     {
         #region Static Members
 
-        private static Int32Divisor[] PositiveDivisors { get; } = unchecked(new Int32Divisor[]
+        private static Int64Divisor[] PositiveDivisors { get; } = unchecked(new Int64Divisor[]
         {
-            new Int32Divisor(3, 0x55555556, SignedDivisorStrategy.MultiplyShift, 0),
-            new Int32Divisor(4, 1, SignedDivisorStrategy.PowerOfTwoPositive, 2),
-            new Int32Divisor(5, 0x66666667, SignedDivisorStrategy.MultiplyShift, 1),
-            new Int32Divisor(6, 0x2aaaaaab, SignedDivisorStrategy.MultiplyShift, 0),
-            new Int32Divisor(7, (int)0x92492493, SignedDivisorStrategy.MultiplyAddShift, 2),
-            new Int32Divisor(8, 1, SignedDivisorStrategy.PowerOfTwoPositive, 3),
-            new Int32Divisor(9, 0x38e38e39, SignedDivisorStrategy.MultiplyShift, 1),
-            new Int32Divisor(10, 0x66666667, SignedDivisorStrategy.MultiplyShift, 2),
-            new Int32Divisor(11, 0x2e8ba2e9, SignedDivisorStrategy.MultiplyShift, 1),
-            new Int32Divisor(12, 0x2aaaaaab, SignedDivisorStrategy.MultiplyShift, 1),
+            new Int64Divisor(3, 0x5555555555555556, SignedDivisorStrategy.MultiplyShift, 0),
+                new Int64Divisor(4, 1, SignedDivisorStrategy.PowerOfTwoPositive, 2),
+                new Int64Divisor(5, 0x6666666666666667, SignedDivisorStrategy.MultiplyShift, 1),
+                new Int64Divisor(6, 0x2aaaaaaaaaaaaaab, SignedDivisorStrategy.MultiplyShift, 0),
+                new Int64Divisor(7, 0x4924924924924925, SignedDivisorStrategy.MultiplyShift, 1),
+                new Int64Divisor(8, 1, SignedDivisorStrategy.PowerOfTwoPositive, 3),
+                new Int64Divisor(9, 0x1c71c71c71c71c72, SignedDivisorStrategy.MultiplyShift, 0),
+                new Int64Divisor(10, 0x6666666666666667, SignedDivisorStrategy.MultiplyShift, 2),
+                new Int64Divisor(11, 0x2e8ba2e8ba2e8ba3, SignedDivisorStrategy.MultiplyShift, 1),
+                new Int64Divisor(12, 0x2aaaaaaaaaaaaaab, SignedDivisorStrategy.MultiplyShift, 1),
         });
 
-        private static Int32Divisor[] NegativeDivisors { get; } = unchecked(new Int32Divisor[]
+        private static Int64Divisor[] NegativeDivisors { get; } = unchecked(new Int64Divisor[]
         {
-            new Int32Divisor(-3, 0x55555555, SignedDivisorStrategy.MultiplySubtractShift, 1),
-            new Int32Divisor(-4, 1, SignedDivisorStrategy.PowerOfTwoNegative, 2),
-            new Int32Divisor(-5, (int)0x99999999, SignedDivisorStrategy.MultiplyShift, 1),
-            new Int32Divisor(-6, (int)0xd5555555, SignedDivisorStrategy.MultiplyShift, 0),
-            new Int32Divisor(-7, 0x6db6db6d, SignedDivisorStrategy.MultiplySubtractShift, 2),
-            new Int32Divisor(-8, 1, SignedDivisorStrategy.PowerOfTwoNegative, 3),
-            new Int32Divisor(-9, (int)0xc71c71c7, SignedDivisorStrategy.MultiplyShift, 1),
-            new Int32Divisor(-10, (int)0x99999999, SignedDivisorStrategy.MultiplyShift, 2),
-            new Int32Divisor(-11, (int)0xd1745d17, SignedDivisorStrategy.MultiplyShift, 1),
-            new Int32Divisor(-12, (int)0xd5555555, SignedDivisorStrategy.MultiplyShift, 1),
+            new Int64Divisor(-3, 0x5555555555555555, SignedDivisorStrategy.MultiplySubtractShift, 1),
+                new Int64Divisor(-4, 1, SignedDivisorStrategy.PowerOfTwoNegative, 2),
+                new Int64Divisor(-5, (long)0x9999999999999999, SignedDivisorStrategy.MultiplyShift, 1),
+                new Int64Divisor(-6, (long)0xd555555555555555, SignedDivisorStrategy.MultiplyShift, 0),
+                new Int64Divisor(-7, (long)0xb6db6db6db6db6db, SignedDivisorStrategy.MultiplyShift, 1),
+                new Int64Divisor(-8, 1, SignedDivisorStrategy.PowerOfTwoNegative, 3),
+                new Int64Divisor(-9, 0x1c71c71c71c71c71, SignedDivisorStrategy.MultiplySubtractShift, 3),
+                new Int64Divisor(-10, (long)0x9999999999999999, SignedDivisorStrategy.MultiplyShift, 2),
+                new Int64Divisor(-11, (long)0xd1745d1745d1745d, SignedDivisorStrategy.MultiplyShift, 1),
+                new Int64Divisor(-12, (long)0xd555555555555555, SignedDivisorStrategy.MultiplyShift, 1),
         });
 
-        private static (int multiplier, SignedDivisorStrategy strategy, byte shift) GetMagic(int divisor)
+        private static (long multiplier, SignedDivisorStrategy strategy, byte shift) GetMagic(long divisor)
         {
             //Copied from CoreCLR, and modified by MineCake1.4.7
 
@@ -74,7 +74,7 @@ namespace DivideSharp
             {
                 if (divisor - 3 < PositiveDivisors.Length)
                 {
-                    var q = PositiveDivisors[divisor - 3];
+                    var q = PositiveDivisors[(int)(divisor - 3)];
                     return (q.Multiplier, q.Strategy, q.Shift);
                 }
             }
@@ -82,28 +82,28 @@ namespace DivideSharp
             {
                 if (-divisor - 3 < NegativeDivisors.Length)
                 {
-                    var q = NegativeDivisors[-divisor - 3];
+                    var q = NegativeDivisors[(int)(-divisor - 3)];
                     return (q.Multiplier, q.Strategy, q.Shift);
                 }
             }
 
-            const int Bits = sizeof(int) * 8;
+            const int Bits = sizeof(long) * 8;
             const int BitsMinus1 = Bits - 1;
-            const uint TwoNMinus1 = 1u << BitsMinus1;
+            const ulong TwoNMinus1 = 1ul << BitsMinus1;
 
             int p;
-            uint absDivisor;
-            uint absNc;
-            uint delta;
-            uint q1;
-            uint r1;
-            uint r2;
-            uint q2;
-            uint t;
-            int resultMagic;
+            ulong absDivisor;
+            ulong absNc;
+            ulong delta;
+            ulong q1;
+            ulong r1;
+            ulong r2;
+            ulong q2;
+            ulong t;
+            long resultMagic;
 
             absDivisor = Utils.Abs(divisor);
-            t = TwoNMinus1 + ((uint)divisor >> BitsMinus1);
+            t = TwoNMinus1 + ((ulong)divisor >> BitsMinus1);
             absNc = t - 1 - t % absDivisor; // absolute value of nc
             p = BitsMinus1; // initialize p
             q1 = TwoNMinus1 / absNc; // initialize q1 = 2^p / abs(nc)
@@ -135,7 +135,7 @@ namespace DivideSharp
                 delta = absDivisor - r2;
             } while (q1 < delta || q1 == delta && r1 == 0);
 
-            resultMagic = (int)(q2 + 1); // resulting magic number
+            resultMagic = (long)(q2 + 1); // resulting magic number
             if (divisor < 0)
             {
                 resultMagic = -resultMagic;
@@ -144,10 +144,12 @@ namespace DivideSharp
             return Math.Sign(resultMagic) != Math.Sign(divisor)
 #pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
 #pragma warning disable S3358 // Ternary operators should not be nested
-                ? (resultMagic, divisor > 0 ? SignedDivisorStrategy.MultiplyAddShift : SignedDivisorStrategy.MultiplySubtractShift, shift)
+                ?
+                (resultMagic, divisor > 0 ? SignedDivisorStrategy.MultiplyAddShift : SignedDivisorStrategy.MultiplySubtractShift, shift)
 #pragma warning restore S3358 // Ternary operators should not be nested
 #pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations
-                : (resultMagic, SignedDivisorStrategy.MultiplyShift, shift);
+                :
+                (resultMagic, SignedDivisorStrategy.MultiplyShift, shift);
         }
 
         #endregion Static Members
@@ -158,7 +160,7 @@ namespace DivideSharp
         /// <value>
         /// The divisor.
         /// </value>
-        public int Divisor { get; }
+        public long Divisor { get; }
 
         /// <summary>
         /// Gets the multiplier for actual "division".
@@ -166,7 +168,7 @@ namespace DivideSharp
         /// <value>
         /// The multiplier.
         /// </value>
-        public int Multiplier { get; }
+        public long Multiplier { get; }
 
         /// <summary>
         /// Gets the strategy of a division.
@@ -190,30 +192,30 @@ namespace DivideSharp
         /// <value>
         /// The mask.
         /// </value>
-        public int Mask { get; }
+        public long Mask { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Int32Divisor"/> struct.
+        /// Initializes a new instance of the <see cref="Int64Divisor"/> struct.
         /// </summary>
         /// <param name="divisor">The divisor.</param>
         /// <param name="multiplier">The multiplier.</param>
         /// <param name="strategy">The strategy.</param>
         /// <param name="shift">The shift.</param>
-        private Int32Divisor(int divisor, int multiplier, SignedDivisorStrategy strategy, byte shift)
+        private Int64Divisor(long divisor, long multiplier, SignedDivisorStrategy strategy, byte shift)
         {
             Divisor = divisor;
             Multiplier = multiplier;
             Strategy = strategy;
             Shift = shift;
-            Mask = (int)~(~0u << shift);
+            Mask = (long)~(~0u << shift);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Int32Divisor"/> struct.
+        /// Initializes a new instance of the <see cref="Int64Divisor"/> struct.
         /// </summary>
         /// <param name="divisor">The divisor.</param>
         /// <exception cref="DivideByZeroException"></exception>
-        public Int32Divisor(int divisor)
+        public Int64Divisor(long divisor)
         {
             if (divisor == 0) throw new DivideByZeroException();
             Divisor = divisor;
@@ -231,7 +233,7 @@ namespace DivideSharp
                 Shift = 0;
                 Mask = 0;
             }
-            else if (divisor == int.MinValue)
+            else if (divisor == long.MinValue)
             {
                 Multiplier = 1;
                 Strategy = SignedDivisorStrategy.Branch;
@@ -242,20 +244,20 @@ namespace DivideSharp
             {
                 Multiplier = 1;
                 Strategy = SignedDivisorStrategy.PowerOfTwoNegative;
-                Shift = (byte)Utils.CountConsecutiveZeros((uint)divisor);
-                Mask = (int)~(~0u << Shift);
+                Shift = (byte)Utils.CountConsecutiveZeros((ulong)divisor);
+                Mask = (long)~(~0u << Shift);
             }
             else if ((divisor & (divisor - 1)) == 0)
             {
                 Multiplier = 1;
                 Strategy = SignedDivisorStrategy.PowerOfTwoPositive;
-                Shift = (byte)Utils.CountConsecutiveZeros((uint)divisor);
-                Mask = (int)~(~0u << Shift);
+                Shift = (byte)Utils.CountConsecutiveZeros((ulong)divisor);
+                Mask = (long)~(~0u << Shift);
             }
             else
             {
                 (Multiplier, Strategy, Shift) = GetMagic(divisor);
-                Mask = (int)~(~0u << Shift);
+                Mask = (long)~(~0u << Shift);
             }
         }
 
@@ -265,46 +267,44 @@ namespace DivideSharp
         /// <param name="value">The dividend.</param>
         /// <returns>The value divided by <see cref="Divisor"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Divide(int value)
+        public long Divide(long value)
         {
             uint strategy = (uint)Strategy;
             if (strategy == (uint)SignedDivisorStrategy.Branch)
             {
-                bool al = value == int.MinValue;
+                bool al = value == long.MinValue;
                 return Unsafe.As<bool, byte>(ref al);
             }
-            int eax;
-            uint r9d;
+            long rax = value;
+            ulong r9;
             if ((strategy & 0b100u) > 0)
             {
-                long rax = value;
                 long multiplier = Multiplier;
                 int shift = Shift;
-                rax *= multiplier;
-                eax = (int)((ulong)rax >> 32);
+                rax = Utils.MultiplyHigh(rax, multiplier);
                 if ((strategy & 0b001u) > 0)
                 {
-                    eax -= value;
+                    rax -= value;
                 }
                 else if ((strategy & 0b010u) > 0)
                 {
-                    eax += value;
+                    rax += value;
                 }
-                r9d = (uint)eax;
-                r9d >>= 31;
-                eax >>= shift;
-                return eax + (int)r9d;
+                r9 = (ulong)rax;
+                r9 >>= 63;
+                rax >>= shift;
+                return rax + (long)r9;
             }
             else
             {
-                eax = value >> 31;
-                int mask = Mask;
+                rax >>= 63;
+                long mask = Mask;
                 int shift = Shift;
                 strategy &= 0b1u;
-                eax &= mask;
-                eax += value;
-                eax >>= shift;
-                return ((strategy & 0b1u) > 0) ? -eax : eax;
+                rax &= mask;
+                rax += value;
+                rax >>= shift;
+                return ((strategy & 0b1u) > 0) ? -rax : rax;
             }
         }
 
@@ -315,50 +315,48 @@ namespace DivideSharp
         /// <param name="quotient">The quotient of the specified numbers.</param>
         /// <returns>The remainder.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int DivRem(int value, out int quotient)
+        public long DivRem(long value, out long quotient)
         {
             uint strategy = (uint)Strategy;
             if (strategy == (uint)SignedDivisorStrategy.Branch)
             {
-                bool al = value == int.MinValue;
-                int q = quotient = Unsafe.As<bool, byte>(ref al);
+                bool al = value == long.MinValue;
+                long q = quotient = Unsafe.As<bool, byte>(ref al);
                 return value & --q;
             }
-            int eax;
-            uint edx;
+            long rax = value;
+            ulong rdx;
             if ((strategy & 0b100u) > 0)
             {
-                long rax = value;
                 long multiplier = Multiplier;
-                int divisor = Divisor;
+                long divisor = Divisor;
                 int shift = Shift;
-                rax *= multiplier;
-                eax = (int)((ulong)rax >> 32);
+                rax = Utils.MultiplyHigh(rax, multiplier);
                 if ((strategy & 0b001u) > 0)
                 {
-                    eax -= value;
+                    rax -= value;
                 }
                 else if ((strategy & 0b010u) > 0)
                 {
-                    eax += value;
+                    rax += value;
                 }
-                edx = (uint)eax;
-                edx >>= 31;
-                eax >>= shift;
-                int r11d = quotient = eax + (int)edx;
-                return value - r11d * divisor;
+                rdx = (ulong)rax;
+                rdx >>= 63;
+                rax >>= shift;
+                long r11 = quotient = rax + (long)rdx;
+                return value - r11 * divisor;
             }
             else
             {
-                eax = value >> 31;
-                int mask = Mask;
+                rax >>= 63;
+                long mask = Mask;
                 int shift = Shift;
-                eax &= mask;
-                eax += value;
-                int r11d = eax >> shift;
+                rax &= mask;
+                rax += value;
+                long r11 = rax >> shift;
                 mask = ~mask;
-                quotient = ((strategy & 0b1u) > 0) ? -r11d : r11d;
-                mask &= eax;
+                quotient = ((strategy & 0b1u) > 0) ? -r11 : r11;
+                mask &= rax;
                 return value - mask;
             }
         }
@@ -369,46 +367,44 @@ namespace DivideSharp
         /// <param name="value">The dividend.</param>
         /// <returns>A multiple of <see cref="Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int AbsFloor(int value)
+        public long AbsFloor(long value)
         {
             uint strategy = (uint)Strategy;
             if (strategy == (uint)SignedDivisorStrategy.Branch)
             {
-                bool al = value == int.MinValue;
-                return Unsafe.As<bool, byte>(ref al) << 31;
+                bool al = value == long.MinValue;
+                return (long)Unsafe.As<bool, byte>(ref al) << 63;
             }
-            int eax;
-            uint r9d;
+            long rax = value;
+            ulong r9;
             if ((strategy & 0b100u) > 0)
             {
-                long rax = value;
-                int divisor = Divisor;
+                long divisor = Divisor;
                 long multiplier = Multiplier;
                 int shift = Shift;
-                rax *= multiplier;
-                eax = (int)((ulong)rax >> 32);
+                rax = Utils.MultiplyHigh(rax, multiplier);
                 if ((strategy & 0b001u) > 0)
                 {
-                    eax -= value;
+                    rax -= value;
                 }
                 else if ((strategy & 0b010u) > 0)
                 {
-                    eax += value;
+                    rax += value;
                 }
-                r9d = (uint)eax;
-                r9d >>= 31;
-                eax >>= shift;
-                eax += (int)r9d;
-                return eax * divisor;
+                r9 = (ulong)rax;
+                r9 >>= 63;
+                rax >>= shift;
+                rax += (long)r9;
+                return rax * divisor;
             }
             else
             {
-                eax = value >> 31;
-                int mask = Mask;
-                eax &= mask;
-                eax += value;
+                rax >>= 63;
+                long mask = Mask;
+                rax &= mask;
+                rax += value;
                 mask = ~mask;
-                mask &= eax;
+                mask &= rax;
                 return mask;
             }
         }
@@ -420,49 +416,47 @@ namespace DivideSharp
         /// <param name="largestMultipleOfDivisor">A multiple of <see cref="Divisor"/> that has the largest absolute value less than the absolute value of the specified <paramref name="value"/>.</param>
         /// <returns>The difference between <paramref name="largestMultipleOfDivisor"/> and <paramref name="value"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int AbsFloorRem(int value, out int largestMultipleOfDivisor)
+        public long AbsFloorRem(long value, out long largestMultipleOfDivisor)
         {
             uint strategy = (uint)Strategy;
             if (strategy == (uint)SignedDivisorStrategy.Branch)
             {
-                bool al = value == int.MinValue;
-                int q = Unsafe.As<bool, byte>(ref al);
-                largestMultipleOfDivisor = q << 31;
+                bool al = value == long.MinValue;
+                long q = Unsafe.As<bool, byte>(ref al);
+                largestMultipleOfDivisor = q << 63;
                 return value & --q;
             }
-            int eax;
-            uint r9d;
+            long rax = value;
+            ulong r9;
             if ((strategy & 0b100u) > 0)
             {
-                long rax = value;
-                int divisor = Divisor;
+                long divisor = Divisor;
                 long multiplier = Multiplier;
                 int shift = Shift;
-                rax *= multiplier;
-                eax = (int)((ulong)rax >> 32);
+                rax = Utils.MultiplyHigh(rax, multiplier);
                 if ((strategy & 0b001u) > 0)
                 {
-                    eax -= value;
+                    rax -= value;
                 }
                 else if ((strategy & 0b010u) > 0)
                 {
-                    eax += value;
+                    rax += value;
                 }
-                r9d = (uint)eax;
-                r9d >>= 31;
-                eax >>= shift;
-                eax += (int)r9d;
-                var f = largestMultipleOfDivisor = eax * divisor;
+                r9 = (ulong)rax;
+                r9 >>= 63;
+                rax >>= shift;
+                rax += (long)r9;
+                var f = largestMultipleOfDivisor = rax * divisor;
                 return value - f;
             }
             else
             {
-                eax = value >> 31;
-                int mask = Mask;
-                eax &= mask;
-                eax += value;
+                rax >>= 63;
+                long mask = Mask;
+                rax &= mask;
+                rax += value;
                 mask = ~mask;
-                mask &= eax;
+                mask &= rax;
                 largestMultipleOfDivisor = mask;
                 return value - mask;
             }
@@ -474,46 +468,44 @@ namespace DivideSharp
         /// <param name="value">The dividend.</param>
         /// <returns>The remainder.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Modulo(int value)
+        public long Modulo(long value)
         {
             uint strategy = (uint)Strategy;
             if (strategy == (uint)SignedDivisorStrategy.Branch)
             {
-                bool al = value != int.MinValue;
+                bool al = value != long.MinValue;
                 return value & -Unsafe.As<bool, byte>(ref al);
             }
-            int eax;
-            uint edx;
+            long rax = value;
+            ulong rdx;
             if ((strategy & 0b100u) > 0)
             {
-                long rax = value;
                 long multiplier = Multiplier;
-                int divisor = Divisor;
+                long divisor = Divisor;
                 int shift = Shift;
-                rax *= multiplier;
-                eax = (int)((ulong)rax >> 32);
+                rax = Utils.MultiplyHigh(rax, multiplier);
                 if ((strategy & 0b001u) > 0)
                 {
-                    eax -= value;
+                    rax -= value;
                 }
                 else if ((strategy & 0b010u) > 0)
                 {
-                    eax += value;
+                    rax += value;
                 }
-                edx = (uint)eax;
-                edx >>= 31;
-                eax >>= shift;
-                int r11d = eax + (int)edx;
-                return value - r11d * divisor;
+                rdx = (ulong)rax;
+                rdx >>= 63;
+                rax >>= shift;
+                long r11 = rax + (long)rdx;
+                return value - r11 * divisor;
             }
             else
             {
-                eax = value >> 31;
-                int mask = Mask;
-                eax &= mask;
-                eax += value;
+                rax >>= 63;
+                long mask = Mask;
+                rax &= mask;
+                rax += value;
                 mask = ~mask;
-                mask &= eax;
+                mask &= rax;
                 return value - mask;
             }
         }
@@ -525,7 +517,7 @@ namespace DivideSharp
         /// <returns>
         ///   <c>true</c> if the current object is equal to the obj parameter; otherwise, <c>false</c>.
         /// </returns>
-        public override bool Equals(object obj) => obj is Int32Divisor divisor && Equals(divisor);
+        public override bool Equals(object obj) => obj is Int64Divisor divisor && Equals(divisor);
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
@@ -534,7 +526,7 @@ namespace DivideSharp
         /// <returns>
         ///   <c>true</c> if the current object is equal to the other parameter; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(Int32Divisor other) => Divisor == other.Divisor && Multiplier == other.Multiplier && Strategy == other.Strategy && Shift == other.Shift && Mask == other.Mask;
+        public bool Equals(Int64Divisor other) => Divisor == other.Divisor && Multiplier == other.Multiplier && Strategy == other.Strategy && Shift == other.Shift && Mask == other.Mask;
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -556,42 +548,42 @@ namespace DivideSharp
         #region Operators
 
         /// <summary>
-        /// Rapidly divides the specified <see cref="int"/> value with <paramref name="right"/>'s <see cref="Divisor"/>.
+        /// Rapidly divides the specified <see cref="long"/> value with <paramref name="right"/>'s <see cref="Divisor"/>.
         /// </summary>
         /// <param name="left">The dividend.</param>
         /// <param name="right">The divisor.</param>
         /// <returns>The result of dividing <paramref name="left"/> by <paramref name="right"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int operator /(int left, Int32Divisor right) => right.Divide(left);
+        public static long operator /(long left, Int64Divisor right) => right.Divide(left);
 
         /// <summary>
-        /// Rapidly returns the remainder resulting from dividing the specified <see cref="int"/> value with <paramref name="right"/>'s <see cref="Divisor"/>.
+        /// Rapidly returns the remainder resulting from dividing the specified <see cref="long"/> value with <paramref name="right"/>'s <see cref="Divisor"/>.
         /// </summary>
         /// <param name="left">The dividend.</param>
         /// <param name="right">The divisor.</param>
         /// <returns>The remainder resulting from dividing <paramref name="left"/> by <paramref name="right"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int operator %(int left, Int32Divisor right) => right.Modulo(left);
+        public static long operator %(long left, Int64Divisor right) => right.Modulo(left);
 
         /// <summary>
-        /// Indicates whether the values of two specified <see cref="Int32Divisor"/> objects are equal.
+        /// Indicates whether the values of two specified <see cref="Int64Divisor"/> objects are equal.
         /// </summary>
-        /// <param name="left">The first <see cref="Int32Divisor"/> to compare.</param>
-        /// <param name="right">The second <see cref="Int32Divisor"/> to compare.</param>
+        /// <param name="left">The first <see cref="Int64Divisor"/> to compare.</param>
+        /// <param name="right">The second <see cref="Int64Divisor"/> to compare.</param>
         /// <returns>
         ///   <c>true</c> if the left is the same as the right; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator ==(Int32Divisor left, Int32Divisor right) => left.Equals(right);
+        public static bool operator ==(Int64Divisor left, Int64Divisor right) => left.Equals(right);
 
         /// <summary>
-        /// Indicates whether the values of two specified <see cref="Int32Divisor"/> objects are not equal.
+        /// Indicates whether the values of two specified <see cref="Int64Divisor"/> objects are not equal.
         /// </summary>
-        /// <param name="left">The first <see cref="Int32Divisor"/> to compare.</param>
-        /// <param name="right">The second  <see cref="Int32Divisor"/> to compare.</param>
+        /// <param name="left">The first <see cref="Int64Divisor"/> to compare.</param>
+        /// <param name="right">The second  <see cref="Int64Divisor"/> to compare.</param>
         /// <returns>
         ///   <c>true</c> if left and right are not equal; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator !=(Int32Divisor left, Int32Divisor right) => !(left == right);
+        public static bool operator !=(Int64Divisor left, Int64Divisor right) => !(left == right);
 
         #endregion Operators
     }

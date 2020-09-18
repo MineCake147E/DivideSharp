@@ -50,15 +50,9 @@ namespace DivideSharp.Tests
                     yield return new TestCaseData(item, item - 1);
                     yield return new TestCaseData(item, item);
                     yield return new TestCaseData(item, item + 1);
-                    yield return new TestCaseData(item, 2 * item - 1);
-                    yield return new TestCaseData(item, 2 * item);
-                    yield return new TestCaseData(item, 2 * item + 1);
                     yield return new TestCaseData(item, -item - 1);
                     yield return new TestCaseData(item, -item);
                     yield return new TestCaseData(item, -item + 1);
-                    yield return new TestCaseData(item, 2 * -item - 1);
-                    yield return new TestCaseData(item, 2 * -item);
-                    yield return new TestCaseData(item, 2 * -item + 1);
                 }
                 //Branch
                 yield return new TestCaseData(int.MinValue, 1);
