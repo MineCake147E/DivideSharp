@@ -48,7 +48,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.49497475"
      inkscape:cx="980.84185"
-     inkscape:cy="481.82237"
+     inkscape:cy="401.01017"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -76,59 +76,58 @@
      inkscape:label="レイヤー 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-58.874975)"
      style="opacity:1">
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#162d50;fill-opacity:1;stroke:#ffffff;stroke-width:4.23333;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
        x="202.79193"
-       y="176.526"
+       y="117.65102"
        id="text5589"><tspan
          sodipodi:role="line"
          id="tspan5587"
          x="202.79193"
-         y="176.526"
+         y="117.65102"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:112.889px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#162d50;stroke:#ffffff;stroke-width:4.23333;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill">Divide</tspan></text>
     <rect
        style="fill:#162d50;fill-opacity:1;stroke:#ffffff;stroke-width:4.23333;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
        id="rect5591"
        width="529.16669"
        height="9.8273811"
-       x="20.890905"
-       y="186.33566" />
+       x="20.890907"
+       y="127.46069" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:119.944px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#162d50;fill-opacity:1;stroke:#ffffff;stroke-width:4.23333;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
        x="213.65088"
-       y="290.03305"
+       y="231.15807"
        id="text5595"><tspan
          sodipodi:role="line"
          id="tspan5593"
          x="213.65088"
-         y="290.03305"
+         y="231.15807"
          style="font-size:112.889px;fill:#162d50;stroke:#ffffff;stroke-width:4.23333;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill">Sharp</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#162d50;fill-opacity:1;stroke:#ffffff;stroke-width:4.23333;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
        x="55.827141"
-       y="-217.46556"
+       y="-158.59058"
        id="text5618"
        transform="scale(1,-1)"><tspan
          sodipodi:role="line"
          id="tspan5616"
          x="55.827141"
-         y="-217.46556"
+         y="-158.59058"
          style="font-size:112.889px;fill:#162d50;stroke:#ffffff;stroke-width:4.23333;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill">#</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#c83737;fill-opacity:1;stroke:#ffffff;stroke-width:4.23333;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
        x="63.323669"
-       y="175.53381"
+       y="116.65884"
        id="text5622"><tspan
          sodipodi:role="line"
          id="tspan5620"
          x="63.323669"
-         y="175.53381"
+         y="116.65884"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:112.889px;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#c83737;stroke:#ffffff;stroke-width:4.23333;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill">X</tspan></text>
   </g>
 </svg>
