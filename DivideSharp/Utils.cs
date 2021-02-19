@@ -6,9 +6,15 @@ using System.Runtime.InteropServices;
 
 using System.Text;
 
+#if NET5_0 || NETCOREAPP3_1
+
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
+
+#endif
 #if NET5_0
 
-using System.Runtime.Intrinsics.X86;
+using System.Runtime.Intrinsics.Arm;
 
 #endif
 
@@ -171,6 +177,9 @@ namespace DivideSharp
             //https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightMultLookup
             unchecked
             {
+#if !NETSTANDARD
+                return BitOperations.TrailingZeroCount(value);
+#else
                 if (value == 0)
                 {
                     return 32;
@@ -181,6 +190,7 @@ namespace DivideSharp
                 return Unsafe.AddByteOffset(
                     ref MemoryMarshal.GetReference(TrailingZeroCountDeBruijn),
                     (IntPtr)(int)index);
+#endif
             }
         }
 
@@ -190,7 +200,17 @@ namespace DivideSharp
         /// <param name="value">The value.</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int CountConsecutiveZeros(ulong value) => (uint)value > 0 ? CountConsecutiveZeros((uint)value) : 32 + CountConsecutiveZeros((uint)(value >> 32));
+        public static int CountConsecutiveZeros(ulong value)
+        {
+            unchecked
+            {
+#if !NETSTANDARD
+                return BitOperations.TrailingZeroCount(value);
+#else
+                return (uint)value > 0 ? CountConsecutiveZeros((uint)value) : 32 + CountConsecutiveZeros((uint)(value >> 32));
+#endif
+            }
+        }
 
         /// <summary>
         /// Multiplies the specified <paramref name="x"/> and <paramref name="y"/> and returns the high part of whole 128bit result.
@@ -203,20 +223,7 @@ namespace DivideSharp
         {
             unchecked
             {
-                ulong xl = (uint)x;
-                ulong yl = (uint)y;
-                long xh = x >> 32;
-                long yh = y >> 32;
-                ulong u = xl * yl;
-                long s = (long)(u >> 32);
-                long t1 = xh * (long)yl;
-                long t2 = yh * (long)xl;
-                s += (uint)t1;
-                s += (uint)t2;
-                s >>= 32;
-                s += (t1 >> 32) + (t2 >> 32);
-                s += xh * yh;
-                return s;
+                return (long)MultiplyHigh((ulong)x, (ulong)y) - ((x >> 63) & y) - ((y >> 63) & x);
             }
         }
 
@@ -256,13 +263,11 @@ namespace DivideSharp
 
             #endregion License Notice
 
-#if NET5_0
+#if NET5_0 || NETCOREAPP3_1
             if (Bmi2.X64.IsSupported)
             {
                 return Bmi2.X64.MultiplyNoFlags(x, y);
             }
-#else
-
 #endif
             ulong xl = (uint)x;
             ulong yl = (uint)y;
