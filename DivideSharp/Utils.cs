@@ -1,8 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
 using System.Text;
+
+#if NET5_0
+
+using System.Runtime.Intrinsics.X86;
+
+#endif
 
 namespace DivideSharp
 {
@@ -248,6 +256,14 @@ namespace DivideSharp
 
             #endregion License Notice
 
+#if NET5_0
+            if (Bmi2.X64.IsSupported)
+            {
+                return Bmi2.X64.MultiplyNoFlags(x, y);
+            }
+#else
+
+#endif
             ulong xl = (uint)x;
             ulong yl = (uint)y;
             ulong xh = x >> 32;

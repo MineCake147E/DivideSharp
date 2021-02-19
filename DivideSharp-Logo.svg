@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="2100"
@@ -14,10 +13,32 @@
    viewBox="0 0 555.62499 238.12501"
    version="1.1"
    id="svg8"
-   inkscape:version="0.92.1 r15371"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)"
    sodipodi:docname="DivideSharp-Logo.svg">
   <defs
-     id="defs2" />
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient865">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop861" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="1"
+         id="stop863" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient865"
+       id="linearGradient869"
+       x1="205.09618"
+       y1="115.9336"
+       x2="544.00568"
+       y2="115.9336"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -36,7 +57,9 @@
      inkscape:window-height="996"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     inkscape:document-rotation="0"
+     inkscape:pagecheckerboard="true" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -45,7 +68,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -53,10 +76,11 @@
      inkscape:label="レイヤー 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-58.874975)">
+     transform="translate(0,-58.874975)"
+     style="opacity:1">
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.58333397px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#162d50;fill-opacity:1;stroke:none;stroke-width:0.26458335"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#162d50;fill-opacity:1;stroke:#ffffff;stroke-width:4.23333338;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:round;paint-order:stroke markers fill"
        x="195.13019"
        y="157.96381"
        id="text5589"><tspan
@@ -64,9 +88,9 @@
          id="tspan5587"
          x="195.13019"
          y="157.96381"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:112.88889313px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#162d50;stroke-width:0.26458335">Divide</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:112.889px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#162d50;stroke:#ffffff;stroke-width:4.23333338;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:round;paint-order:stroke markers fill">Divide</tspan></text>
     <rect
-       style="fill:#162d50;fill-opacity:1;stroke:none;stroke-width:1.85208333;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#162d50;fill-opacity:1;stroke:#ffffff;stroke-width:4.23333338;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
        id="rect5591"
        width="529.16669"
        height="9.8273811"
@@ -74,7 +98,7 @@
        y="167.77347" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:119.94445038px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#162d50;fill-opacity:1;stroke:none;stroke-width:0.26458335"
+       style="font-style:normal;font-weight:normal;font-size:119.944px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#162d50;fill-opacity:1;stroke:#ffffff;stroke-width:4.23333338;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-linejoin:round;paint-order:stroke markers fill"
        x="205.98914"
        y="271.47086"
        id="text5595"><tspan
@@ -82,10 +106,10 @@
          id="tspan5593"
          x="205.98914"
          y="271.47086"
-         style="font-size:112.88889313px;fill:#162d50;stroke-width:0.26458335">Sharp</tspan></text>
+         style="font-size:112.889px;fill:#162d50;stroke-width:4.23333338;stroke:#ffffff;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-linejoin:round;paint-order:stroke markers fill">Sharp</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.58333397px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#162d50;fill-opacity:1;stroke:none;stroke-width:0.26458335"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#162d50;fill-opacity:1;stroke:#ffffff;stroke-width:4.23333338;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-linejoin:round;paint-order:stroke markers fill"
        x="48.165394"
        y="-198.90337"
        id="text5618"
@@ -94,10 +118,10 @@
          id="tspan5616"
          x="48.165394"
          y="-198.90337"
-         style="font-size:112.88889313px;fill:#162d50;stroke-width:0.26458335">#</tspan></text>
+         style="font-size:112.889px;fill:#162d50;stroke-width:4.23333338;stroke:#ffffff;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-linejoin:round;paint-order:stroke markers fill">#</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.58333397px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#c83737;fill-opacity:1;stroke:none;stroke-width:0.26458335"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#c83737;fill-opacity:1;stroke:#ffffff;stroke-width:4.23333338;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-linejoin:round;paint-order:stroke markers fill"
        x="55.661922"
        y="156.97162"
        id="text5622"><tspan
@@ -105,6 +129,6 @@
          id="tspan5620"
          x="55.661922"
          y="156.97162"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:112.88889313px;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#c83737;stroke-width:0.26458335">X</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:112.889px;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#c83737;stroke-width:4.23333338;stroke:#ffffff;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-linejoin:round;paint-order:stroke markers fill">X</tspan></text>
   </g>
 </svg>
