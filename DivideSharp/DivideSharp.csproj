@@ -4,7 +4,7 @@
         <TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.1;netstandard2.0</TargetFrameworks>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <Authors>MineCake1.4.7</Authors>
-        <Version>0.0.3</Version>
+        <Version>0.0.5</Version>
         <Description>Like RyuJIT does before running, the DivideSharp optimizes an integer division by "mostly constant" values.</Description>
         <Copyright>Copyright 2019 MineCake1.4.7</Copyright>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -13,6 +13,8 @@
         <RepositoryType>git</RepositoryType>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Company>MineCake1.4.7</Company>
+        <PackageIcon>DivideSharp-SquareLogo.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -31,6 +33,17 @@
     <ItemGroup>
         <PackageReference Include="System.Memory" Version="4.5.4" />
         <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.7.1" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
     </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\DivideSharp-SquareLogo.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="README.md" Pack="true" PackagePath=""/>
+  </ItemGroup>
 </Project>

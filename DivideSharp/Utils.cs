@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-using System.Text;
 
 #if NET5_0 || NETCOREAPP3_1
 
@@ -236,48 +233,29 @@ namespace DivideSharp
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong MultiplyHigh(ulong x, ulong y)
         {
-            //Copied from CoreCLR, and modified by MineCake1.4.7
-
-            #region License Notice
-
-            /*
-             The MIT License (MIT)
-            Copyright (c) .NET Foundation and Contributors
-            All rights reserved.
-            Permission is hereby granted, free of charge, to any person obtaining a copy
-            of this software and associated documentation files (the "Software"), to deal
-            in the Software without restriction, including without limitation the rights
-            to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-            copies of the Software, and to permit persons to whom the Software is
-            furnished to do so, subject to the following conditions:
-            The above copyright notice and this permission notice shall be included in all
-            copies or substantial portions of the Software.
-            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-            SOFTWARE.
-             */
-
-            #endregion License Notice
-
 #if NET5_0 || NETCOREAPP3_1
             if (Bmi2.X64.IsSupported)
             {
                 return Bmi2.X64.MultiplyNoFlags(x, y);
             }
 #endif
-            ulong xl = (uint)x;
-            ulong yl = (uint)y;
-            ulong xh = x >> 32;
-            ulong yh = y >> 32;
-            ulong mull = xl * yl;
-            ulong t = xh * yl + (mull >> 32);
-            ulong tl = (uint)t;
-            tl += xl * yh;
-            return xh * yh + (t >> 32) + (tl >> 32);
+            //Copied and modified from Shamisen which I own the code.
+            ulong a0 = (uint)x;
+            var a1 = x >> 32;
+            ulong b0 = (uint)y;
+            var b1 = y >> 32;
+            var z1a = a0 * b1;
+            var z1b = a1 * b0;
+            var z0 = a0 * b0;
+            var z2 = a1 * b1;
+            var z1 = z1a + z1b;
+            var f = z1a > z1;
+            z1b = (ulong)Unsafe.As<bool, byte>(ref f) << 32;
+            z1a = z1 + (z0 >> 32);
+            z1a >>= 32;
+            z2 += z1b;
+            z2 += z1a;
+            return z2;
         }
 
         /// <summary>
@@ -311,6 +289,22 @@ namespace DivideSharp
         {
             var q = value >> 63;
             return (ulong)((value + q) ^ q);
+        }
+        /// <summary>
+        /// Sets the bits of <paramref name="value"/> higher than specified <paramref name="index"/> to 0.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        public static uint ZeroHighBits(int index, uint value)
+        {
+#if NETCOREAPP3_1_OR_GREATER
+            if (Bmi2.IsSupported)
+            {
+                return Bmi2.ZeroHighBits(value, (uint)index);
+            }
+#endif
+            return value & ~(~0u << index);
         }
     }
 }

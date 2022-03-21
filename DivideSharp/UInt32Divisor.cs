@@ -28,6 +28,17 @@ namespace DivideSharp
 
         private static (uint multiplier, UnsignedIntegerDivisorStrategy strategy, byte shift) GetMagic(uint divisor)
         {
+            if (divisor - 3 < Divisors.Length)
+            {
+                var q = Divisors[(int)(divisor - 3)];
+                return (q.Multiplier, q.Strategy, q.Shift);
+            }
+
+            return CalculateMagic(divisor);
+        }
+
+        private static (uint multiplier, UnsignedIntegerDivisorStrategy strategy, byte shift) CalculateMagic(uint divisor)
+        {
             //Copied from CoreCLR, and modified by MineCake1.4.7
 
             #region License Notice
@@ -54,13 +65,6 @@ namespace DivideSharp
              */
 
             #endregion License Notice
-
-            if (divisor - 3 < Divisors.Length)
-            {
-                var q = Divisors[(int)(divisor - 3)];
-                return (q.Multiplier, q.Strategy, q.Shift);
-            }
-
             const int Bits = sizeof(uint) * 8;
             const int BitsMinus1 = Bits - 1;
             const uint TwoNMinus1 = 1u << BitsMinus1;
@@ -187,6 +191,12 @@ namespace DivideSharp
             {
                 (Multiplier, Strategy, Shift) = GetMagic(divisor);
             }
+        }
+
+        private static UInt32Divisor GenerateMagic(uint divisor)
+        {
+            var g = CalculateMagic(divisor);
+            return new UInt32Divisor(divisor, g.multiplier, g.strategy, g.shift);
         }
 
         /// <summary>

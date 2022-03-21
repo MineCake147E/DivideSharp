@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
+#if NETCOREAPP3_1_OR_GREATER
+using System.Runtime.Intrinsics.X86;
+#endif
 
 namespace DivideSharp
 {
@@ -185,14 +186,6 @@ namespace DivideSharp
         public byte Shift { get; }
 
         /// <summary>
-        /// Gets the mask to divide.
-        /// </summary>
-        /// <value>
-        /// The mask.
-        /// </value>
-        public int Mask { get; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="Int32Divisor"/> struct.
         /// </summary>
         /// <param name="divisor">The divisor.</param>
@@ -205,7 +198,6 @@ namespace DivideSharp
             Multiplier = multiplier;
             Strategy = strategy;
             Shift = shift;
-            Mask = (int)~(~0u << shift);
         }
 
         /// <summary>
@@ -222,40 +214,34 @@ namespace DivideSharp
                 Multiplier = 1;
                 Strategy = SignedDivisorStrategy.PowerOfTwoPositive;
                 Shift = 0;
-                Mask = 0;
             }
             else if (divisor == -1)
             {
                 Multiplier = -1;
                 Strategy = SignedDivisorStrategy.PowerOfTwoNegative;
                 Shift = 0;
-                Mask = 0;
             }
             else if (divisor == int.MinValue)
             {
                 Multiplier = 1;
                 Strategy = SignedDivisorStrategy.Branch;
                 Shift = 0;
-                Mask = 0;
             }
             else if ((-divisor & (-divisor - 1)) == 0)
             {
                 Multiplier = 1;
                 Strategy = SignedDivisorStrategy.PowerOfTwoNegative;
                 Shift = (byte)Utils.CountConsecutiveZeros((uint)divisor);
-                Mask = (int)~(~0u << Shift);
             }
             else if ((divisor & (divisor - 1)) == 0)
             {
                 Multiplier = 1;
                 Strategy = SignedDivisorStrategy.PowerOfTwoPositive;
                 Shift = (byte)Utils.CountConsecutiveZeros((uint)divisor);
-                Mask = (int)~(~0u << Shift);
             }
             else
             {
                 (Multiplier, Strategy, Shift) = GetMagic(divisor);
-                Mask = (int)~(~0u << Shift);
             }
         }
 
@@ -268,44 +254,54 @@ namespace DivideSharp
         public int Divide(int value)
         {
             uint strategy = (uint)Strategy;
-            if (strategy == (uint)SignedDivisorStrategy.Branch)
+            if (strategy != (uint)SignedDivisorStrategy.Branch)
             {
-                bool al = value == int.MinValue;
-                return Unsafe.As<bool, byte>(ref al);
-            }
-            int eax;
-            uint r9d;
-            if ((strategy & 0b100u) > 0)
-            {
-                long rax = value;
-                long multiplier = Multiplier;
-                int shift = Shift;
-                rax *= multiplier;
-                eax = (int)((ulong)rax >> 32);
-                if ((strategy & 0b001u) > 0)
+                int eax;
+                uint r9d;
+                if ((strategy & 0b100u) > 0)
                 {
-                    eax -= value;
+                    long rax = value;
+                    long multiplier = Multiplier;
+                    int shift = Shift;
+                    r9d = strategy & 0b1;
+                    rax *= multiplier;
+                    eax = (int)((ulong)rax >> 32);
+                    if ((strategy & 0b010u) > 0)
+                    {
+                        value = (value ^ -(int)r9d) + (int)r9d;
+                        eax += value;
+                    }
+                    r9d = (uint)eax;
+                    r9d >>= 31;
+                    eax >>= shift;
+                    return eax + (int)r9d;
                 }
-                else if ((strategy & 0b010u) > 0)
+                else
                 {
+                    eax = value >> 31;
+                    int shift = Shift;
+                    strategy &= 0b1u;
+#if NETCOREAPP3_1_OR_GREATER
+                    if (Bmi2.IsSupported)
+                    {
+                        eax = (int)Bmi2.ZeroHighBits((uint)eax, (uint)shift);
+                    }
+                    else
+                    {
+                        int mask = (int)~(~0u << shift);
+                        eax &= mask;
+                    }
+#else
+                    int mask = (int)~(~0u << shift);
+                    eax &= mask;
+#endif
                     eax += value;
+                    eax >>= shift;
+                    return (eax ^ -(int)strategy) + (int)strategy;  //negate eax when strategy is 1
                 }
-                r9d = (uint)eax;
-                r9d >>= 31;
-                eax >>= shift;
-                return eax + (int)r9d;
             }
-            else
-            {
-                eax = value >> 31;
-                int mask = Mask;
-                int shift = Shift;
-                strategy &= 0b1u;
-                eax &= mask;
-                eax += value;
-                eax >>= shift;
-                return ((strategy & 0b1u) > 0) ? -eax : eax;
-            }
+            bool al = value == int.MinValue;
+            return Unsafe.As<bool, byte>(ref al);
         }
 
         /// <summary>
@@ -351,8 +347,8 @@ namespace DivideSharp
             else
             {
                 eax = value >> 31;
-                int mask = Mask;
                 int shift = Shift;
+                int mask = (int)~(~0u << shift);
                 eax &= mask;
                 eax += value;
                 int r11d = eax >> shift;
@@ -404,7 +400,8 @@ namespace DivideSharp
             else
             {
                 eax = value >> 31;
-                int mask = Mask;
+                int shift = Shift;
+                int mask = (int)~(~0u << shift);
                 eax &= mask;
                 eax += value;
                 mask = ~mask;
@@ -458,7 +455,8 @@ namespace DivideSharp
             else
             {
                 eax = value >> 31;
-                int mask = Mask;
+                int shift = Shift;
+                int mask = (int)~(~0u << shift);
                 eax &= mask;
                 eax += value;
                 mask = ~mask;
@@ -509,7 +507,8 @@ namespace DivideSharp
             else
             {
                 eax = value >> 31;
-                int mask = Mask;
+                int shift = Shift;
+                int mask = (int)~(~0u << shift);
                 eax &= mask;
                 eax += value;
                 mask = ~mask;
@@ -534,7 +533,7 @@ namespace DivideSharp
         /// <returns>
         ///   <c>true</c> if the current object is equal to the other parameter; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(Int32Divisor other) => Divisor == other.Divisor && Multiplier == other.Multiplier && Strategy == other.Strategy && Shift == other.Shift && Mask == other.Mask;
+        public bool Equals(Int32Divisor other) => Divisor == other.Divisor && Multiplier == other.Multiplier && Strategy == other.Strategy && Shift == other.Shift;
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -549,7 +548,6 @@ namespace DivideSharp
             hashCode = hashCode * -1521134295 + Multiplier.GetHashCode();
             hashCode = hashCode * -1521134295 + Strategy.GetHashCode();
             hashCode = hashCode * -1521134295 + Shift.GetHashCode();
-            hashCode = hashCode * -1521134295 + Mask.GetHashCode();
             return hashCode;
         }
 
