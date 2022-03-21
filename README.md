@@ -6,11 +6,6 @@ Like RyuJIT does before running, the DivideSharp optimizes an integer division b
 
 ## Currently supported features
 
-- Dividing two `uint` values quickly using `UInt32Divisor`
-  - About 2.0x faster than ordinal `div` instruction on Intel Core i7-4790
-- Dividing two `int` values quickly using `Int32Divisor`
-  - About 1.4x faster than ordinal `idiv` instruction on Intel Core i7-4790
-
 ## Principles of operation
 
 DivideSharp first computes the magic parameters for division and then converts a single division instruction, such as `idiv` or `div`, into an equivalent code that has no such slow division instructions and whose entire division code is faster than a single division instruction.
