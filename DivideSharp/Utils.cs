@@ -1,15 +1,15 @@
-﻿using System;
+using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-#if NET5_0 || NETCOREAPP3_1
+#if NET5_0_OR_GREATER || NETCOREAPP3_1
 
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
 #endif
-#if NET5_0
+#if NET5_0_OR_GREATER
 
 using System.Runtime.Intrinsics.Arm;
 
@@ -156,12 +156,12 @@ namespace DivideSharp
 
         #endregion Legacy CountBits
 
-        private static ReadOnlySpan<byte> TrailingZeroCountDeBruijn => new byte[32]
-        {
+        private static ReadOnlySpan<byte> TrailingZeroCountDeBruijn =>
+        [
             //https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightMultLookup
             0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8,
             31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9
-        };
+        ];
 
         /// <summary>
         /// Counts the consecutive zero bits on the right.
@@ -233,7 +233,7 @@ namespace DivideSharp
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong MultiplyHigh(ulong x, ulong y)
         {
-#if NET5_0 || NETCOREAPP3_1
+#if NET5_0_OR_GREATER|| NETCOREAPP3_1
             if (Bmi2.X64.IsSupported)
             {
                 return Bmi2.X64.MultiplyNoFlags(x, y);

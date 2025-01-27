@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -15,30 +15,30 @@ namespace DivideSharp
 
         private static Int64Divisor[] PositiveDivisors { get; } = unchecked(new Int64Divisor[]
         {
-            new Int64Divisor(3, 0x5555555555555556, SignedDivisorStrategy.MultiplyShift, 0),
-                new Int64Divisor(4, 1, SignedDivisorStrategy.PowerOfTwoPositive, 2),
-                new Int64Divisor(5, 0x6666666666666667, SignedDivisorStrategy.MultiplyShift, 1),
-                new Int64Divisor(6, 0x2aaaaaaaaaaaaaab, SignedDivisorStrategy.MultiplyShift, 0),
-                new Int64Divisor(7, 0x4924924924924925, SignedDivisorStrategy.MultiplyShift, 1),
-                new Int64Divisor(8, 1, SignedDivisorStrategy.PowerOfTwoPositive, 3),
-                new Int64Divisor(9, 0x1c71c71c71c71c72, SignedDivisorStrategy.MultiplyShift, 0),
-                new Int64Divisor(10, 0x6666666666666667, SignedDivisorStrategy.MultiplyShift, 2),
-                new Int64Divisor(11, 0x2e8ba2e8ba2e8ba3, SignedDivisorStrategy.MultiplyShift, 1),
-                new Int64Divisor(12, 0x2aaaaaaaaaaaaaab, SignedDivisorStrategy.MultiplyShift, 1),
+            new(3, 0x5555555555555556, SignedDivisorStrategy.MultiplyShift, 0),
+                new(4, 1, SignedDivisorStrategy.PowerOfTwoPositive, 2),
+                new(5, 0x6666666666666667, SignedDivisorStrategy.MultiplyShift, 1),
+                new(6, 0x2aaaaaaaaaaaaaab, SignedDivisorStrategy.MultiplyShift, 0),
+                new(7, 0x4924924924924925, SignedDivisorStrategy.MultiplyShift, 1),
+                new(8, 1, SignedDivisorStrategy.PowerOfTwoPositive, 3),
+                new(9, 0x1c71c71c71c71c72, SignedDivisorStrategy.MultiplyShift, 0),
+                new(10, 0x6666666666666667, SignedDivisorStrategy.MultiplyShift, 2),
+                new(11, 0x2e8ba2e8ba2e8ba3, SignedDivisorStrategy.MultiplyShift, 1),
+                new(12, 0x2aaaaaaaaaaaaaab, SignedDivisorStrategy.MultiplyShift, 1),
         });
 
         private static Int64Divisor[] NegativeDivisors { get; } = unchecked(new Int64Divisor[]
         {
-            new Int64Divisor(-3, 0x5555555555555555, SignedDivisorStrategy.MultiplySubtractShift, 1),
-                new Int64Divisor(-4, 1, SignedDivisorStrategy.PowerOfTwoNegative, 2),
-                new Int64Divisor(-5, (long)0x9999999999999999, SignedDivisorStrategy.MultiplyShift, 1),
-                new Int64Divisor(-6, (long)0xd555555555555555, SignedDivisorStrategy.MultiplyShift, 0),
-                new Int64Divisor(-7, (long)0xb6db6db6db6db6db, SignedDivisorStrategy.MultiplyShift, 1),
-                new Int64Divisor(-8, 1, SignedDivisorStrategy.PowerOfTwoNegative, 3),
-                new Int64Divisor(-9, 0x1c71c71c71c71c71, SignedDivisorStrategy.MultiplySubtractShift, 3),
-                new Int64Divisor(-10, (long)0x9999999999999999, SignedDivisorStrategy.MultiplyShift, 2),
-                new Int64Divisor(-11, (long)0xd1745d1745d1745d, SignedDivisorStrategy.MultiplyShift, 1),
-                new Int64Divisor(-12, (long)0xd555555555555555, SignedDivisorStrategy.MultiplyShift, 1),
+            new(-3, 0x5555555555555555, SignedDivisorStrategy.MultiplySubtractShift, 1),
+                new(-4, 1, SignedDivisorStrategy.PowerOfTwoNegative, 2),
+                new(-5, (long)0x9999999999999999, SignedDivisorStrategy.MultiplyShift, 1),
+                new(-6, (long)0xd555555555555555, SignedDivisorStrategy.MultiplyShift, 0),
+                new(-7, (long)0xb6db6db6db6db6db, SignedDivisorStrategy.MultiplyShift, 1),
+                new(-8, 1, SignedDivisorStrategy.PowerOfTwoNegative, 3),
+                new(-9, 0x1c71c71c71c71c71, SignedDivisorStrategy.MultiplySubtractShift, 3),
+                new(-10, (long)0x9999999999999999, SignedDivisorStrategy.MultiplyShift, 2),
+                new(-11, (long)0xd1745d1745d1745d, SignedDivisorStrategy.MultiplyShift, 1),
+                new(-12, (long)0xd555555555555555, SignedDivisorStrategy.MultiplyShift, 1),
         });
 
         private static (long multiplier, SignedDivisorStrategy strategy, byte shift) GetMagic(long divisor)

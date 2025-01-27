@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.1;netstandard2.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;netstandard2.1;netstandard2.0</TargetFrameworks>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+      <LangVersion>Latest</LangVersion>
         <Authors>MineCake1.4.7</Authors>
-        <Version>0.0.5</Version>
+        <Version>0.0.6</Version>
         <Description>Like RyuJIT does before running, the DivideSharp optimizes an integer division by "mostly constant" values.</Description>
         <Copyright>Copyright 2019 MineCake1.4.7</Copyright>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -30,10 +31,10 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="System.Memory" Version="4.5.4" />
-        <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+    <ItemGroup Condition="'$(TargetFramework)' != 'net6.0'">
+        <PackageReference Include="System.Memory" Version="4.6.0" />
+        <PackageReference Include="System.Numerics.Vectors" Version="4.6.0" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -44,6 +45,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="README.md" Pack="true" PackagePath=""/>
+      <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 </Project>

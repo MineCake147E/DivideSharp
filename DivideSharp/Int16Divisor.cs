@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -13,33 +13,33 @@ namespace DivideSharp
     {
         #region Static Members
 
-        private static Int16Divisor[] PositiveDivisors { get; } = unchecked(new Int16Divisor[]
-        {
-            new Int16Divisor(3, 21846, SignedDivisorStrategy.MultiplyShift, 0),
-            new Int16Divisor(4, 1, SignedDivisorStrategy.PowerOfTwoPositive, 2),
-            new Int16Divisor(5, 26215, SignedDivisorStrategy.MultiplyShift, 1),
-            new Int16Divisor(6, 10923, SignedDivisorStrategy.MultiplyShift, 0),
-            new Int16Divisor(7, 18725, SignedDivisorStrategy.MultiplyShift, 1),
-            new Int16Divisor(8, 1, SignedDivisorStrategy.PowerOfTwoPositive, 3),
-            new Int16Divisor(9, 7282, SignedDivisorStrategy.MultiplyShift, 0),
-            new Int16Divisor(10, 26215, SignedDivisorStrategy.MultiplyShift, 2),
-            new Int16Divisor(11, 5958, SignedDivisorStrategy.MultiplyShift, 0),
-            new Int16Divisor(12, 10923, SignedDivisorStrategy.MultiplyShift, 1),
-        });
+        private static Int16Divisor[] PositiveDivisors =>
+        [
+            new(3, 21846, SignedDivisorStrategy.MultiplyShift, 0),
+            new(4, 1, SignedDivisorStrategy.PowerOfTwoPositive, 2),
+            new(5, 26215, SignedDivisorStrategy.MultiplyShift, 1),
+            new(6, 10923, SignedDivisorStrategy.MultiplyShift, 0),
+            new(7, 18725, SignedDivisorStrategy.MultiplyShift, 1),
+            new(8, 1, SignedDivisorStrategy.PowerOfTwoPositive, 3),
+            new(9, 7282, SignedDivisorStrategy.MultiplyShift, 0),
+            new(10, 26215, SignedDivisorStrategy.MultiplyShift, 2),
+            new(11, 5958, SignedDivisorStrategy.MultiplyShift, 0),
+            new(12, 10923, SignedDivisorStrategy.MultiplyShift, 1),
+        ];
 
-        private static Int16Divisor[] NegativeDivisors { get; } = unchecked(new Int16Divisor[]
-        {
-            new Int16Divisor(-3, 21845, SignedDivisorStrategy.MultiplySubtractShift, 1),
-            new Int16Divisor(-4, 1, SignedDivisorStrategy.PowerOfTwoNegative, 2),
-            new Int16Divisor(-5, -26215, SignedDivisorStrategy.MultiplyShift, 1),
-            new Int16Divisor(-6, -10923, SignedDivisorStrategy.MultiplyShift, 0),
-            new Int16Divisor(-7, -18725, SignedDivisorStrategy.MultiplyShift, 1),
-            new Int16Divisor(-8, 1, SignedDivisorStrategy.PowerOfTwoNegative, 3),
-            new Int16Divisor(-9, 7281, SignedDivisorStrategy.MultiplySubtractShift, 3),
-            new Int16Divisor(-10, -26215, SignedDivisorStrategy.MultiplyShift, 2),
-            new Int16Divisor(-11, 17873, SignedDivisorStrategy.MultiplySubtractShift, 3),
-            new Int16Divisor(-12, -10923, SignedDivisorStrategy.MultiplyShift, 1),
-        });
+        private static Int16Divisor[] NegativeDivisors { get; } = 
+        [
+            new(-3, 21845, SignedDivisorStrategy.MultiplySubtractShift, 1),
+            new(-4, 1, SignedDivisorStrategy.PowerOfTwoNegative, 2),
+            new(-5, -26215, SignedDivisorStrategy.MultiplyShift, 1),
+            new(-6, -10923, SignedDivisorStrategy.MultiplyShift, 0),
+            new(-7, -18725, SignedDivisorStrategy.MultiplyShift, 1),
+            new(-8, 1, SignedDivisorStrategy.PowerOfTwoNegative, 3),
+            new(-9, 7281, SignedDivisorStrategy.MultiplySubtractShift, 3),
+            new(-10, -26215, SignedDivisorStrategy.MultiplyShift, 2),
+            new(-11, 17873, SignedDivisorStrategy.MultiplySubtractShift, 3),
+            new(-12, -10923, SignedDivisorStrategy.MultiplyShift, 1),
+        ];
 
         private static (short multiplier, SignedDivisorStrategy strategy, byte shift) GetMagic(short divisor)
         {

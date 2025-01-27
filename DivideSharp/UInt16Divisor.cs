@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -14,16 +14,16 @@ namespace DivideSharp
 
         private static UInt16Divisor[] Divisors { get; } = new UInt16Divisor[]
         {
-            new UInt16Divisor(3, 43691, UnsignedIntegerDivisorStrategy.MultiplyShift, 17),
-            new UInt16Divisor(4, 1, UnsignedIntegerDivisorStrategy.Shift, 1),   //not even refereed
-            new UInt16Divisor(5, 52429, UnsignedIntegerDivisorStrategy.MultiplyShift, 18),
-            new UInt16Divisor(6, 43691, UnsignedIntegerDivisorStrategy.MultiplyShift, 18),
-            new UInt16Divisor(7, 9363, UnsignedIntegerDivisorStrategy.MultiplyAddShift, 2),
-            new UInt16Divisor(8, 1, UnsignedIntegerDivisorStrategy.Shift, 3),
-            new UInt16Divisor(9, 58255, UnsignedIntegerDivisorStrategy.MultiplyShift, 19),
-            new UInt16Divisor(10, 52429, UnsignedIntegerDivisorStrategy.MultiplyShift, 19),
-            new UInt16Divisor(11, 47663, UnsignedIntegerDivisorStrategy.MultiplyShift, 19),
-            new UInt16Divisor(12, 43691, UnsignedIntegerDivisorStrategy.MultiplyShift, 19),
+            new(3, 43691, UnsignedIntegerDivisorStrategy.MultiplyShift, 17),
+            new(4, 1, UnsignedIntegerDivisorStrategy.Shift, 1),   //not even refereed
+            new(5, 52429, UnsignedIntegerDivisorStrategy.MultiplyShift, 18),
+            new(6, 43691, UnsignedIntegerDivisorStrategy.MultiplyShift, 18),
+            new(7, 9363, UnsignedIntegerDivisorStrategy.MultiplyAddShift, 2),
+            new(8, 1, UnsignedIntegerDivisorStrategy.Shift, 3),
+            new(9, 58255, UnsignedIntegerDivisorStrategy.MultiplyShift, 19),
+            new(10, 52429, UnsignedIntegerDivisorStrategy.MultiplyShift, 19),
+            new(11, 47663, UnsignedIntegerDivisorStrategy.MultiplyShift, 19),
+            new(12, 43691, UnsignedIntegerDivisorStrategy.MultiplyShift, 19),
         };
 
         private static (ushort multiplier, UnsignedIntegerDivisorStrategy strategy, byte shift) GetMagic(ushort divisor)

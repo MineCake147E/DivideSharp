@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -14,16 +14,16 @@ namespace DivideSharp
 
         private static UInt32Divisor[] Divisors { get; } = new UInt32Divisor[]
         {
-            new UInt32Divisor(3, 0xaaaaaaabu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 1),
-            new UInt32Divisor(4, 1, UnsignedIntegerDivisorStrategy.Shift, 1),
-            new UInt32Divisor(5, 0xcccccccdu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 2),
-            new UInt32Divisor(6, 0xaaaaaaabu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 2),
-            new UInt32Divisor(7, 0x24924925u, UnsignedIntegerDivisorStrategy.MultiplyAddShift, 2),
-            new UInt32Divisor(8, 1, UnsignedIntegerDivisorStrategy.Shift, 3),
-            new UInt32Divisor(9, 0x38e38e39u, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 1),
-            new UInt32Divisor(10, 0xcccccccdu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 3),
-            new UInt32Divisor(11, 0xba2e8ba3u, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 3),
-            new UInt32Divisor(12, 0xaaaaaaabu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 3),
+            new(3, 0xaaaaaaabu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 1),
+            new(4, 1, UnsignedIntegerDivisorStrategy.Shift, 1),
+            new(5, 0xcccccccdu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 2),
+            new(6, 0xaaaaaaabu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 2),
+            new(7, 0x24924925u, UnsignedIntegerDivisorStrategy.MultiplyAddShift, 2),
+            new(8, 1, UnsignedIntegerDivisorStrategy.Shift, 3),
+            new(9, 0x38e38e39u, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 1),
+            new(10, 0xcccccccdu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 3),
+            new(11, 0xba2e8ba3u, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 3),
+            new(12, 0xaaaaaaabu, UnsignedIntegerDivisorStrategy.MultiplyShift, 32 + 3),
         };
 
         private static (uint multiplier, UnsignedIntegerDivisorStrategy strategy, byte shift) GetMagic(uint divisor)
